@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab — The Jansen leg — Wenda Wang</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* ---- Lab chrome (shared by all four prototypes; do not restyle) ---- */
+    .lab-bar {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      color: var(--ink-3);
+      background: var(--bg-2);
+      padding: 0.6rem 0;
+    }
+    .lab-bar .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .lab-bar a { text-decoration: none; color: var(--ink-2); }
+    .lab-bar a:hover { color: var(--accent); }
+    .lab-bar b { font-weight: 500; color: var(--ink); }
+    .lab-note {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      max-width: 34rem;
+      margin: 0 0 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ---- Your element's CSS goes below. Keep the hero typography exactly as in style.css. ---- */
+    /* Two columns: the text as it is, the leg as a marginal figure on the right,
+       vertically centred on the name and lede. 220px leaves the name room to sit
+       on one line inside the 41rem measure. */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      column-gap: 1.25rem;
+      align-items: center;
+    }
+    .hero-text { min-width: 0; }
+    .leg {
+      margin: 0;
+      width: 220px;
+      height: 220px;
+      justify-self: end;
+    }
+    .leg canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: minmax(0, 1fr); row-gap: 2.25rem; }
+      /* Stacked: the name stays first; the leg follows the kicker as a small
+         tailpiece, flush with the type (the negative margin absorbs the canvas padding). */
+      .leg { width: 170px; height: 170px; justify-self: start; margin-left: -0.4rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="lab-bar">
+    <div class="wrap">
+      <span><a href="/lab/">Lab</a> · <b>2 of 4 — The Jansen leg</b></span>
+      <span><a href="/lab/belief/">← Prev</a> &nbsp; <a href="/lab/arm/">Next →</a></span>
+    </div>
+  </div>
+
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap" id="top">
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Wenda Wang</h1>
+        <p class="lede">
+          Machine learning engineer working where vision, robotics and large models meet.
+          Currently Member of Technical Staff at <a href="https://elorian.ai" rel="noopener">Elorian</a>,
+          where I lead the robotics vertical.
+        </p>
+        <p class="kicker">
+          <span>Computer vision</span>
+          <span>Robot learning</span>
+          <span>ML infrastructure</span>
+          <span>Sunnyvale, California</span>
+        </p>
+      </div>
+      <figure class="leg" role="img" aria-label="Line diagram of a Jansen Strandbeest leg linkage whose crank turns slowly while the foot traces a flat-bottomed path.">
+        <canvas aria-hidden="true"></canvas>
+      </figure>
+    </div>
+
+    <section class="about" aria-label="About">
+      <p class="lab-note">Lab note: a Strandbeest leg — Jansen's eleven-bar closed chain. It walks on its own; move the mouse left and right to scrub the crank.</p>
+      <p>
+        I have spent the past decade building learning systems that see the world and act in it:
+        sim-to-real computer vision and autonomous-systems perception at Apple, a walking humanoid
+        at Noble Machines, and now visual reasoning models for robots at Elorian.
+      </p>
+      <p>
+        I think of myself as an engineer and builder before anything else. The work I am proudest of
+        is the kind you can point at — a model that shipped, a robot that walks.
+      </p>
+    </section>
+
+    <section id="now">
+      <h2 class="label">Now</h2>
+      <article class="entry">
+        <div class="when">2026 — present</div>
+        <h3 class="who"><a href="https://elorian.ai" rel="noopener">Elorian</a></h3>
+        <p class="role">Member of Technical Staff · Robotics</p>
+        <p class="desc">
+          Elorian is a visual reasoning lab founded by former Google DeepMind researchers, building
+          native multimodal models that reason directly over images, video, audio and text rather than
+          translating everything into words first. I lead the robotics vertical, bringing that kind of
+          visual reasoning into embodied settings.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Lab prototype — not linked from the site</span>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+      const fig = document.querySelector('.leg');
+      const cv = fig.querySelector('canvas');
+      const ctx = cv.getContext('2d');
+      const TAU = Math.PI * 2;
+
+      /* ---------- Geometry: Jansen's "holy numbers" (unitless) ---------- */
+      const a = 38, b = 41.5, c = 39.3, d = 40.1, e = 55.8, f = 39.4, g = 36.7,
+            h = 65.7, i = 49, j = 50, k = 61.9, l = 7.8, m = 15;
+
+      // Intersection of circle(p, r1) and circle(q, r2). `side` (+1 / -1) picks the
+      // branch to the left / right of the direction p->q; it is fixed per joint, so
+      // the chain never flips configuration. sqrt is clamped so rounding cannot NaN.
+      function cc(p, r1, q, r2, side) {
+        const dx = q[0] - p[0], dy = q[1] - p[1], dd = Math.hypot(dx, dy);
+        const x = (dd * dd + r1 * r1 - r2 * r2) / (2 * dd);
+        const y = side * Math.sqrt(Math.max(r1 * r1 - x * x, 0));
+        const ux = dx / dd, uy = dy / dd;
+        return [p[0] + x * ux - y * uy, p[1] + x * uy + y * ux];
+      }
+
+      // Joint positions for crank angle th (y up). F is the fixed pivot, O the crank
+      // axle, C the crank pin. Two four-bar loops hang off C, each closed by a rigid
+      // triangle: F-A-B (sides b, e, d) above and D-E-G (sides g, h, i) below. G is the foot.
+      const F = [0, 0], O = [a, l];
+      function solve(th) {
+        const C = [O[0] + m * Math.cos(th), O[1] + m * Math.sin(th)];
+        const A = cc(F, b, C, j, 1), B = cc(F, d, A, e, 1);
+        const D = cc(F, c, C, k, -1), E = cc(D, g, B, f, 1), G = cc(D, i, E, h, 1);
+        return { F, O, C, A, B, D, E, G };
+      }
+      const BARS = [['C','A'], ['F','A'], ['F','B'], ['A','B'], ['F','D'], ['C','D'],
+                    ['B','E'], ['D','E'], ['D','G'], ['E','G']];
+      const JOINTS = ['A', 'B', 'C', 'D', 'E'];
+
+      // The foot's closed path and the bounding box of the whole cycle, sampled once.
+      const N = 240, PATH = [];
+      let bx0 = Infinity, by0 = Infinity, bx1 = -Infinity, by1 = -Infinity;
+      for (let n = 0; n < N; n++) {
+        const P = solve(n / N * TAU);
+        PATH.push(P.G);
+        for (const key in P) {
+          bx0 = Math.min(bx0, P[key][0]); bx1 = Math.max(bx1, P[key][0]);
+          by0 = Math.min(by0, P[key][1]); by1 = Math.max(by1, P[key][1]);
+        }
+      }
+
+      /* ---------- Canvas, colours, layout ---------- */
+      let W = 0, H = 0, S = 1, ox = 0, oy = 0;      // CSS size, scale, origin
+      const X = x => ox + S * x, Y = y => oy - S * y; // unit space -> canvas (y flipped)
+      const col = {};
+      const darkMQ = matchMedia('(prefers-color-scheme: dark)');
+      const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
+
+      function readColors() {
+        const cs = getComputedStyle(document.documentElement);
+        for (const name of ['bg', 'ink', 'ink-3', 'rule', 'accent'])
+          col[name] = cs.getPropertyValue('--' + name).trim();
+      }
+
+      function layout() {
+        const r = fig.getBoundingClientRect();
+        W = Math.round(r.width); H = Math.round(r.height);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const pad = 8;
+        S = Math.min((W - 2 * pad) / (bx1 - bx0), (H - 2 * pad) / (by1 - by0));
+        ox = W / 2 - S * (bx0 + bx1) / 2;
+        oy = H / 2 + S * (by0 + by1) / 2;
+        dirty = true;
+      }
+
+      /* ---------- Drawing ---------- */
+      function circle(x, y, r, fill) {
+        ctx.beginPath(); ctx.arc(x, y, r, 0, TAU);
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        ctx.stroke();
+      }
+
+      function draw(th) {
+        const P = solve(th);
+        ctx.clearRect(0, 0, W, H);
+        ctx.lineWidth = 1;
+        ctx.lineJoin = 'round';
+
+        // Construction lines: the crank pin's circle and the foot's closed path.
+        ctx.strokeStyle = col.rule;
+        ctx.beginPath();
+        PATH.forEach((p, n) => n ? ctx.lineTo(X(p[0]), Y(p[1])) : ctx.moveTo(X(p[0]), Y(p[1])));
+        ctx.closePath(); ctx.stroke();
+        circle(X(O[0]), Y(O[1]), S * m);
+
+        // Bars.
+        ctx.strokeStyle = col['ink-3'];
+        ctx.beginPath();
+        for (const [p, q] of BARS) {
+          ctx.moveTo(X(P[p][0]), Y(P[p][1]));
+          ctx.lineTo(X(P[q][0]), Y(P[q][1]));
+        }
+        ctx.stroke();
+
+        // The crank: the one live element.
+        ctx.strokeStyle = col.accent;
+        ctx.beginPath();
+        ctx.moveTo(X(O[0]), Y(O[1])); ctx.lineTo(X(P.C[0]), Y(P.C[1]));
+        ctx.stroke();
+
+        // Pin joints: open circles (the crank pin in accent); fixed pivots: a larger
+        // ring with a solid centre.
+        for (const key of JOINTS) {
+          ctx.strokeStyle = key === 'C' ? col.accent : col['ink-3'];
+          circle(X(P[key][0]), Y(P[key][1]), 2.25, col.bg);
+        }
+        ctx.strokeStyle = col['ink-3'];
+        for (const p of [F, O]) {
+          circle(X(p[0]), Y(p[1]), 3.25, col.bg);
+          ctx.fillStyle = col.ink;
+          ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 1.1, 0, TAU); ctx.fill();
+        }
+        // The foot: a solid point, the thing that draws the curve.
+        ctx.fillStyle = col.ink;
+        ctx.beginPath(); ctx.arc(X(P.G[0]), Y(P.G[1]), 1.9, 0, TAU); ctx.fill();
+      }
+
+      /* ---------- Motion ---------- */
+      // Crank angle `theta` eases toward `target`. Idle: the target advances at OMEGA0
+      // (one turn per ~9 s, negative = the leg walks to the right). Scrub: the target is
+      // anchored to where the pointer first moved, so the first event never jumps.
+      const OMEGA0 = -TAU / 9;        // rad/s, idle
+      const OMEGA_MAX = TAU / 1.8;    // rad/s, hard speed limit while scrubbing
+      const TAU_EASE = 0.28;          // s, exponential smoothing time constant
+      const STILL_MS = 3000;          // pointer still this long -> back to idle
+      const REV_PX = 0.6;             // one crank turn per this fraction of window width
+
+      let theta = 0, target = 0, drawnTheta = NaN, dirty = true;
+      let scrubbing = false, anchorX = 0, anchorTh = 0, lastMove = 0, lastX = NaN, lastY = NaN;
+      let running = false, rafId = 0, prev = 0, visible = true, onScreen = true;
+
+      function step(dt, now) {
+        if (scrubbing && now - lastMove > STILL_MS) scrubbing = false;
+        if (!scrubbing) target += OMEGA0 * dt;
+        const dth = (target - theta) * (1 - Math.exp(-dt / TAU_EASE));
+        const lim = OMEGA_MAX * dt;
+        theta += Math.max(-lim, Math.min(lim, dth));
+      }
+
+      function frame(now) {
+        rafId = 0;
+        if (!running) return;
+        const dt = Math.min(0.05, prev ? (now - prev) / 1000 : 0);
+        prev = now;
+        step(dt, now);
+        if (dirty || Math.abs(theta - drawnTheta) > 1e-4) {
+          draw(theta); drawnTheta = theta; dirty = false;
+        }
+        rafId = requestAnimationFrame(frame);
+      }
+
+      function setRunning() {
+        const want = visible && onScreen && !motionMQ.matches;
+        if (want === running) return;
+        running = want; prev = 0;
+        if (running && !rafId) rafId = requestAnimationFrame(frame);
+      }
+
+      function onMove(ev) {
+        if (motionMQ.matches || ev.pointerType === 'touch') return;
+        // Browsers synthesise pointermove after scrolling; only real motion counts.
+        if (ev.clientX === lastX && ev.clientY === lastY) return;
+        lastX = ev.clientX; lastY = ev.clientY;
+        if (!scrubbing) { scrubbing = true; anchorX = ev.clientX; anchorTh = target; }
+        lastMove = performance.now();
+        target = anchorTh - (ev.clientX - anchorX) / (REV_PX * window.innerWidth) * TAU;
+      }
+      function onLeave(ev) {
+        if (ev.type === 'mouseout' && ev.relatedTarget) return; // still inside the page
+        scrubbing = false;
+      }
+
+      /* ---------- Wiring ---------- */
+      readColors();
+      layout();
+      draw(theta);
+      window.addEventListener('pointermove', onMove, { passive: true });
+      document.addEventListener('pointerleave', onLeave);
+      document.addEventListener('mouseout', onLeave);
+
+      let resizeT = 0;
+      const onResize = () => {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(() => { scrubbing = false; layout(); if (!running) draw(theta); }, 150);
+      };
+      window.addEventListener('resize', onResize);
+      window.addEventListener('orientationchange', onResize);
+
+      darkMQ.addEventListener('change', () => { readColors(); dirty = true; if (!running) draw(theta); });
+      motionMQ.addEventListener('change', () => { setRunning(); if (!running) { theta = target = 0; draw(theta); } });
+      document.addEventListener('visibilitychange', () => { visible = !document.hidden; setRunning(); });
+      new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; setRunning(); }).observe(cv);
+      setRunning();
+    })();
+  </script>
+</body>
+</html>

@@ -171,7 +171,7 @@
     <section id="contact" class="contact">
       <h2 class="label">Elsewhere</h2>
       <ul>
-        <li><span class="k">Email</span><span class="v"><a href="mailto:wwd7086@gmail.com">wwd7086@gmail.com</a></span></li>
+        <li><span class="k">Email</span><span class="v"><a id="em" href="#contact" data-u="6807dww" data-d="moc.liamg" rel="nofollow">wwd7086 [at] gmail [dot] com</a></span></li>
         <li><span class="k">GitHub</span><span class="v"><a href="https://github.com/wwd7086" rel="noopener">github.com/wwd7086</a></span></li>
         <li><span class="k">LinkedIn</span><span class="v"><a href="https://www.linkedin.com/in/wendaw/" rel="noopener">linkedin.com/in/wendaw</a></span></li>
         <li><span class="k">X</span><span class="v"><a href="https://x.com/wwd7086" rel="noopener">x.com/wwd7086</a></span></li>
@@ -183,5 +183,17 @@
     <span>© 2026 Wenda Wang</span>
     <span>Sunnyvale, California</span>
   </footer>
+
+  <script>
+    // Assemble the email address at runtime so it never appears in the HTML source.
+    (function () {
+      var a = document.getElementById('em');
+      if (!a) return;
+      var r = function (s) { return s.split('').reverse().join(''); };
+      var addr = r(a.dataset.u) + String.fromCharCode(64) + r(a.dataset.d);
+      a.href = 'mail' + 'to:' + addr;
+      a.textContent = addr;
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab — Wenda Wang</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <h1>Lab</h1>
+      <p class="lede">
+        Four candidate interactive elements for the front page, each shown in place. Not linked
+        from the site. Move the mouse around, stop, leave the window, come back; try them on a phone too.
+      </p>
+    </div>
+
+    <section aria-label="Prototypes">
+      <ul class="post-list">
+        <li>
+          <div class="when">1 of 4</div>
+          <div>
+            <h3 class="who"><a href="/lab/belief/">The belief cloud</a></h3>
+            <p class="desc">A particle filter estimating where the cursor is from noisy measurements. Mist that coalesces when you stop and dissolves when you leave.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">2 of 4</div>
+          <div>
+            <h3 class="who"><a href="/lab/jansen/">The Jansen leg</a></h3>
+            <p class="desc">A Strandbeest linkage walking on its own; the cursor's horizontal position scrubs the crank.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">3 of 4</div>
+          <div>
+            <h3 class="who"><a href="/lab/arm/">The reaching arm</a></h3>
+            <p class="desc">A three-link arm in the page margin solving inverse kinematics toward the cursor, with weight. Step outside its reach.</p>
+          </div>
+        </li>
+        <li>
+          <div class="when">4 of 4</div>
+          <div>
+            <h3 class="who"><a href="/lab/predict/">The predicted path</a></h3>
+            <p class="desc">A Kalman filter predicting the cursor ~1 s ahead with its uncertainty. Move in straight lines, then turn suddenly.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Lab — prototypes</span>
+  </footer>
+</body>
+</html>

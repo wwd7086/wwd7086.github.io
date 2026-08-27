@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab — The reaching arm — Wenda Wang</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* ---- Lab chrome (shared by all four prototypes; do not restyle) ---- */
+    .lab-bar {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      color: var(--ink-3);
+      background: var(--bg-2);
+      padding: 0.6rem 0;
+    }
+    .lab-bar .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .lab-bar a { text-decoration: none; color: var(--ink-2); }
+    .lab-bar a:hover { color: var(--accent); }
+    .lab-bar b { font-weight: 500; color: var(--ink); }
+    .lab-note {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      max-width: 34rem;
+      margin: 0 0 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ---- Your element's CSS goes below. Keep the hero typography exactly as in style.css. ---- */
+    /* The arm lives on a fixed, viewport-sized canvas that sits *behind* the type
+       (negative z-index above the page background), so text always prints over it. */
+    .arm {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .arm canvas { display: block; width: 100%; height: 100%; }
+    /* On narrow viewports there is no margin for the arm to live in: reserve a
+       small band above the name instead. The canvas draws into this rectangle. */
+    .arm-band { display: none; height: 168px; }
+    @media (max-width: 900px) { .arm-band { display: block; } }
+  </style>
+</head>
+
+<body>
+  <div class="lab-bar">
+    <div class="wrap">
+      <span><a href="/lab/">Lab</a> · <b>3 of 4 — The reaching arm</b></span>
+      <span><a href="/lab/jansen/">← Prev</a> &nbsp; <a href="/lab/predict/">Next →</a></span>
+    </div>
+  </div>
+
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap" id="top">
+    <div class="hero">
+      <div class="arm-band" aria-hidden="true"></div>
+      <div class="arm" role="img" aria-label="A hairline drawing of a three-link robot arm, mounted at the right edge of the page, reaching toward the cursor.">
+        <canvas aria-hidden="true"></canvas>
+      </div>
+      <h1>Wenda Wang</h1>
+      <p class="lede">
+        Machine learning engineer working where vision, robotics and large models meet.
+        Currently Member of Technical Staff at <a href="https://elorian.ai" rel="noopener">Elorian</a>,
+        where I lead the robotics vertical.
+      </p>
+      <p class="kicker">
+        <span>Computer vision</span>
+        <span>Robot learning</span>
+        <span>ML infrastructure</span>
+        <span>Sunnyvale, California</span>
+      </p>
+    </div>
+
+    <section class="about" aria-label="About">
+      <p class="lab-note">Lab note: a three-link arm solving inverse kinematics toward the cursor. Watch it settle; step outside its reach.</p>
+      <p>
+        I have spent the past decade building learning systems that see the world and act in it:
+        sim-to-real computer vision and autonomous-systems perception at Apple, a walking humanoid
+        at Noble Machines, and now visual reasoning models for robots at Elorian.
+      </p>
+      <p>
+        I think of myself as an engineer and builder before anything else. The work I am proudest of
+        is the kind you can point at — a model that shipped, a robot that walks.
+      </p>
+    </section>
+
+    <section id="now">
+      <h2 class="label">Now</h2>
+      <article class="entry">
+        <div class="when">2026 — present</div>
+        <h3 class="who"><a href="https://elorian.ai" rel="noopener">Elorian</a></h3>
+        <p class="role">Member of Technical Staff · Robotics</p>
+        <p class="desc">
+          Elorian is a visual reasoning lab founded by former Google DeepMind researchers, building
+          native multimodal models that reason directly over images, video, audio and text rather than
+          translating everything into words first. I lead the robotics vertical, bringing that kind of
+          visual reasoning into embodied settings.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Lab prototype — not linked from the site</span>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+      const root = document.documentElement;
+      const wrap = document.querySelector('.arm');
+      const cv = wrap.querySelector('canvas');
+      const ctx = cv.getContext('2d');
+      const hero = document.querySelector('.hero');
+      const band = document.querySelector('.arm-band');
+      const h1 = hero.querySelector('h1');
+      const kicker = hero.querySelector('.kicker');
+      const col = document.querySelector('main.wrap');
+      const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+      const mqFine = matchMedia('(hover: hover) and (pointer: fine)');
+      const mqDark = matchMedia('(prefers-color-scheme: dark)');
+      const PI = Math.PI, TAU = 2 * PI;
+      const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
+
+      // ---- design tokens, re-read when the theme flips
+      const tok = {};
+      function readTokens() {
+        const cs = getComputedStyle(root);
+        for (const k of ['bg', 'ink-2', 'ink-3', 'rule', 'accent']) tok[k] = cs.getPropertyValue('--' + k).trim();
+      }
+
+      // ---- geometry. Angles are absolute for the shoulder, relative for elbow and
+      // wrist; canvas y points down, so positive angles turn clockwise on screen.
+      let W = 0, H = 0, mode = 'margin';
+      let L = [150, 120, 80];                 // link lengths (px)
+      let lim = [[0, 0], [0, 0], [0, 0]];     // joint limits [min, max]
+      let rest = [0, 0, 0];                   // resting pose
+      let reach = 0;                          // radius of the workspace boundary
+      let anchorDoc = 0;                      // shoulder y in document coordinates
+      let clipDoc = null;                     // band rectangle (document coords) in band mode
+      let colEdge = -1e9;                     // outer right edge of the 41rem column
+      const base = { x: 0, y: 0 };
+      const HOVER = 16;                       // how far short of the pointer the tip stops
+      // farthest the fingertip gets: elbow at its straightest (lim[1][1]), wrist straight
+      const reachOf = (l) => {
+        const c = Math.cos(lim[1][1]), l23 = l[1] + l[2];
+        return Math.sqrt(l[0] * l[0] + l23 * l23 + 2 * l[0] * l23 * c);
+      };
+
+      function layout() {
+        const r = wrap.getBoundingClientRect();
+        W = r.width; H = r.height;
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        mode = getComputedStyle(band).display === 'none' ? 'margin' : 'band';
+        base.x = W - 9;
+        let s;
+        if (mode === 'margin') {
+          lim = [[PI / 2 + 0.35, 1.5 * PI - 0.3], [-2.6, -0.2], [-1.0, 1.0]];
+          rest = [PI + 0.55, -1.9, 0.65];
+          colEdge = col.getBoundingClientRect().right;
+          // size the arm so its full reach ends at about the column's edge, never deep inside it
+          s = clamp(Math.min((base.x - colEdge + 6) / reachOf([150, 120, 80]), H / 720), 0.6, 1);
+          anchorDoc = (h1.getBoundingClientRect().top + kicker.getBoundingClientRect().bottom) / 2 + scrollY;
+          clipDoc = null;
+        } else {
+          const b = band.getBoundingClientRect();
+          lim = [[PI - 0.5, PI + 0.6], [-2.6, -0.25], [-1.0, 1.0]];
+          rest = [PI + 0.5, -1.9, 0.65];
+          colEdge = -1e9;   // the band lives inside the column; no exclusion there
+          s = clamp(b.height / 420, 0.34, 0.5);
+          anchorDoc = b.top + b.height / 2 + scrollY;
+          clipDoc = { top: b.top + scrollY, h: b.height };
+        }
+        L = [150 * s, 120 * s, 80 * s];
+        reach = reachOf(L);
+        if (mqReduce.matches) { q = rest.slice(); g = rest.slice(); }
+      }
+
+      // forward kinematics: joint positions p0..p3 and the absolute angle of the last link
+      function fk(a) {
+        const a1 = a[0], a2 = a1 + a[1], a3 = a2 + a[2];
+        const x1 = base.x + L[0] * Math.cos(a1), y1 = base.y + L[0] * Math.sin(a1);
+        const x2 = x1 + L[1] * Math.cos(a2), y2 = y1 + L[1] * Math.sin(a2);
+        const x3 = x2 + L[2] * Math.cos(a3), y3 = y2 + L[2] * Math.sin(a3);
+        return { x: [base.x, x1, x2, x3], y: [base.y, y1, y2, y3], a3 };
+      }
+
+      // Damped-least-squares IK, warm-started from the current goal angles.
+      //   dq = J^T (J J^T + λ²I)^-1 e  +  (I − J⁺J) b
+      // The second term acts in the null space (the one redundant DOF of a 3-link
+      // planar arm), pulling gently toward the rest pose and pointing the wrist at
+      // the pointer, without disturbing the fingertip.
+      function solveIK(g, tx, ty, px, py, iters) {
+        const lam2 = 24 * 24;
+        for (let it = 0; it < iters; it++) {
+          const f = fk(g);
+          let ex = tx - f.x[3], ey = ty - f.y[3];
+          const d = Math.hypot(ex, ey);
+          if (d < 0.02) break;
+          if (d > 40) { ex *= 40 / d; ey *= 40 / d; }   // bounded step: no wild swings
+          // column i of J: rotating joint i moves the tip perpendicular to (tip − joint i)
+          const jx = [], jy = [];
+          for (let i = 0; i < 3; i++) { jx[i] = -(f.y[3] - f.y[i]); jy[i] = f.x[3] - f.x[i]; }
+          let a00 = lam2, a01 = 0, a11 = lam2;   // A = J J^T + λ²I
+          for (let i = 0; i < 3; i++) { a00 += jx[i] * jx[i]; a01 += jx[i] * jy[i]; a11 += jy[i] * jy[i]; }
+          const det = a00 * a11 - a01 * a01;
+          const i00 = a11 / det, i01 = -a01 / det, i11 = a00 / det;   // A^-1
+          const ux = i00 * ex + i01 * ey, uy = i01 * ex + i11 * ey;   // A^-1 e
+          // bias b: rest pose for shoulder/elbow, "look at the pointer" for the wrist
+          const want = Math.atan2(py - f.y[2], px - f.x[2]);
+          let dw = want - f.a3; dw = Math.atan2(Math.sin(dw), Math.cos(dw));
+          const b = [0.06 * (rest[0] - g[0]), 0.06 * (rest[1] - g[1]), 0.2 * dw];
+          for (let i = 0; i < 3; i++) {
+            const pr0 = jx[i] * i00 + jy[i] * i01, pr1 = jx[i] * i01 + jy[i] * i11;   // row i of J⁺
+            let dq = jx[i] * ux + jy[i] * uy + b[i];
+            for (let j = 0; j < 3; j++) dq -= (pr0 * jx[j] + pr1 * jy[j]) * b[j];    // − (J⁺J b)_i
+            g[i] = clamp(g[i] + dq, lim[i][0], lim[i][1]);
+          }
+        }
+      }
+
+      // ---- motion state. q = drawn angles, v = their velocities, g = goal angles.
+      let q = [0, 0, 0], v = [0, 0, 0], g = [0, 0, 0];
+      const OMEGA = [4.2, 5.2, 6.8], ZETA = [0.72, 0.68, 0.62], VMAX = [2.5, 3.5, 4.5];
+      const STEP = 1 / 120;
+      let acc = 0, simT = 0, stiff = 0.45;   // stiffness scale: 1 awake, ~0.45 resting
+      let arcA = 0;                           // workspace arc opacity: shown only while out of reach
+      let px = 0, py = 0, lastMove = -1e9, away = true, dirty = true;
+      let running = false, raf = 0, last = 0, shown = true;
+
+      // per-joint damped springs (slightly under-damped so the arm settles with a nudge of overshoot)
+      function stepSprings(h) {
+        for (let i = 0; i < 3; i++) {
+          const w = OMEGA[i] * stiff;
+          const a = w * w * (g[i] - q[i]) - 2 * ZETA[i] * w * v[i];
+          v[i] = clamp(v[i] + a * h, -VMAX[i], VMAX[i]);
+          q[i] += v[i] * h;
+        }
+        if (q[1] > -0.02) q[1] = -0.02;   // the elbow never folds through itself
+      }
+
+      // resting pose with a slow breathing motion travelling wrist-ward through the joints
+      function sway(t) {
+        const s1 = TAU * t / 6, s2 = TAU * t / 14.3;
+        g[0] = rest[0] + 0.030 * Math.sin(s1) + 0.020 * Math.sin(s2 + 0.4);
+        g[1] = rest[1] + 0.055 * Math.sin(s1 + 0.9) + 0.035 * Math.sin(s2 + 1.7);
+        g[2] = rest[2] + 0.080 * Math.sin(s1 + 1.8) + 0.050 * Math.sin(s2 + 2.9);
+      }
+
+      function frame(now) {
+        raf = running ? requestAnimationFrame(frame) : 0;
+        const dt = Math.min((now - last) / 1000, 0.05);   // clamp: a backgrounded tab must not explode
+        last = now;
+        base.y = anchorDoc - scrollY;
+        const idle = away || !mqFine.matches || now - lastMove > 5000;
+        let changed = dirty, outside = false; dirty = false;
+        if (idle) {
+          sway(simT); changed = true;
+        } else {
+          let cx = px, cy = py;
+          if (clipDoc) {   // band mode: the arm only reaches within its band
+            const t = clipDoc.top - scrollY;
+            cx = clamp(cx, 12, W - 12); cy = clamp(cy, t + 14, t + clipDoc.h - 14);
+          }
+          // fingertip goal: HOVER px short of the pointer, or on the boundary when out of reach
+          const dx = cx - base.x, dy = cy - base.y, d = Math.hypot(dx, dy) || 1;
+          outside = d > reach + HOVER;
+          const r = outside ? reach : Math.max(d - HOVER, 30);
+          const g0 = g[0], g1 = g[1], g2 = g[2];
+          solveIK(g, base.x + dx / d * r, base.y + dy / d * r, cx, cy, 3);
+          if (Math.abs(g[0] - g0) + Math.abs(g[1] - g1) + Math.abs(g[2] - g2) > 1e-5) changed = true;
+        }
+        const arcTo = outside ? 1 : 0;
+        if (arcA !== arcTo) changed = true;
+        const still = !changed && v.every((x) => Math.abs(x) < 3e-4) &&
+          q.every((x, i) => Math.abs(x - g[i]) < 3e-4);
+        if (still) { acc = 0; return; }   // holding position: nothing to draw
+        acc += dt;
+        // wake up briskly, relax slowly; the arc fades over ~400 ms
+        const target = idle ? 0.45 : 1, k = 1 - Math.exp(-STEP / (idle ? 1.0 : 0.35));
+        const kArc = 1 - Math.exp(-STEP / 0.13);
+        for (let n = 0; acc >= STEP && n < 8; n++) {
+          stiff += (target - stiff) * k;
+          arcA += (arcTo - arcA) * kArc;
+          stepSprings(STEP); simT += STEP; acc -= STEP;
+        }
+        if (Math.abs(arcA - arcTo) < 0.004) arcA = arcTo;
+        draw();
+      }
+
+      function circle(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.stroke(); }
+      function dashArc(a, b) { if (b > a) { ctx.beginPath(); ctx.arc(base.x, base.y, reach, a, b); ctx.stroke(); } }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.save();
+        if (clipDoc) { ctx.beginPath(); ctx.rect(0, clipDoc.top - scrollY, W, clipDoc.h); ctx.clip(); }
+        ctx.lineWidth = 1; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        // workspace boundary: a dashed hairline that only shows while the arm is out of reach,
+        // kept 24 px inside the window and entirely clear of the text column
+        if (arcA > 0.002) {
+          const hi = Math.min(lim[0][1], 1.5 * PI - Math.acos(clamp((base.y - 24) / reach, -1, 1)));
+          const lo = Math.max(lim[0][0], PI - Math.asin(clamp((H - 24 - base.y) / reach, -1, 1)));
+          // the circle crosses x = colEdge + 6 at angles π ± phi; leave that span out
+          const kx = (base.x - colEdge - 6) / reach;
+          const phi = kx < 1 ? Math.acos(Math.max(kx, 0)) : 0;
+          ctx.strokeStyle = tok.rule; ctx.globalAlpha = 0.75 * arcA; ctx.setLineDash([3, 5]);
+          if (phi === 0) dashArc(lo, hi);
+          else { dashArc(lo, Math.min(hi, PI - phi)); dashArc(Math.max(lo, PI + phi), hi); }
+          ctx.setLineDash([]);
+        }
+        // ground symbol: the wall the shoulder is pinned to
+        const gx = Math.round(base.x + 4) + 0.5, gy = Math.round(base.y) + 0.5;
+        ctx.strokeStyle = tok['ink-3']; ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.moveTo(gx, gy - 14); ctx.lineTo(gx, gy + 14);
+        for (let k = -1; k <= 1; k++) { ctx.moveTo(gx, gy + 8 * k - 3); ctx.lineTo(gx + 5, gy + 8 * k + 2); }
+        ctx.stroke();
+        // links
+        const f = fk(q);
+        ctx.beginPath(); ctx.moveTo(f.x[0], f.y[0]);
+        for (let i = 1; i < 4; i++) ctx.lineTo(f.x[i], f.y[i]);
+        ctx.stroke();
+        // pin joints, filled with paper so the line does not run through them
+        ctx.fillStyle = tok.bg;
+        circle(f.x[0], f.y[0], 3.5); circle(f.x[1], f.y[1], 2.8); circle(f.x[2], f.y[2], 2.8);
+        // end effector: a small open two-finger gripper, the one accent on the page
+        const ux = Math.cos(f.a3), uy = Math.sin(f.a3), nx = -uy, ny = ux;
+        const tx = f.x[3], ty = f.y[3];
+        ctx.strokeStyle = tok.accent; ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.moveTo(tx - 4 * nx, ty - 4 * ny); ctx.lineTo(tx + 4 * nx, ty + 4 * ny);
+        ctx.moveTo(tx - 4 * nx, ty - 4 * ny); ctx.lineTo(tx - 5.2 * nx + 9 * ux, ty - 5.2 * ny + 9 * uy);
+        ctx.moveTo(tx + 4 * nx, ty + 4 * ny); ctx.lineTo(tx + 5.2 * nx + 9 * ux, ty + 5.2 * ny + 9 * uy);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // ---- lifecycle: run only while visible, on screen and motion is welcome
+      function sync() {
+        const should = shown && document.visibilityState === 'visible' && !mqReduce.matches;
+        if (should && !running) { running = true; last = performance.now(); dirty = true; raf = requestAnimationFrame(frame); }
+        else if (!should && running) { running = false; cancelAnimationFrame(raf); raf = 0; if (!shown) ctx.clearRect(0, 0, W, H); }
+      }
+      let rt = 0;
+      function relayout() { clearTimeout(rt); rt = setTimeout(() => { layout(); dirty = true; base.y = anchorDoc - scrollY; draw(); }, 150); }
+
+      readTokens(); layout();
+      q = rest.slice(); g = rest.slice(); sway(0); q = g.slice();
+      base.y = anchorDoc - scrollY; draw();
+
+      addEventListener('resize', relayout);
+      addEventListener('orientationchange', relayout);
+      if (window.ResizeObserver) new ResizeObserver(relayout).observe(hero);   // fonts arriving shift the hero
+      if (document.fonts) document.fonts.ready.then(relayout);
+      mqDark.addEventListener('change', () => { readTokens(); dirty = true; draw(); });
+      addEventListener('scroll', () => {   // the shoulder is anchored to the hero, so it rides with the page
+        dirty = true;
+        if (mqReduce.matches) { base.y = anchorDoc - scrollY; draw(); }
+      }, { passive: true });
+      if (mqReduce.matches) return;   // one static frame; no cursor following, no loop
+
+      addEventListener('pointermove', (e) => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;   // touch/pen: stay autonomous
+        px = e.clientX; py = e.clientY; lastMove = performance.now(); away = false; dirty = true;
+      }, { passive: true });
+      document.addEventListener('pointerleave', () => { away = true; });
+      document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) away = true; });
+      document.addEventListener('visibilitychange', sync);
+      new IntersectionObserver((es) => { shown = es[0].isIntersecting; sync(); },
+        { rootMargin: '480px 0px 480px 0px' }).observe(hero);
+      sync();
+    })();
+  </script>
+</body>
+</html>

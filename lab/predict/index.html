@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab — The predicted path — Wenda Wang</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* ---- Lab chrome (shared by all four prototypes; do not restyle) ---- */
+    .lab-bar {
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      color: var(--ink-3);
+      background: var(--bg-2);
+      padding: 0.6rem 0;
+    }
+    .lab-bar .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .lab-bar a { text-decoration: none; color: var(--ink-2); }
+    .lab-bar a:hover { color: var(--accent); }
+    .lab-bar b { font-weight: 500; color: var(--ink); }
+    .lab-note {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      max-width: 34rem;
+      margin: 0 0 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* ---- Your element's CSS goes below. Keep the hero typography exactly as in style.css. ---- */
+    /* The overlay covers the whole viewport and never takes pointer events: the prediction
+       follows the cursor anywhere on the page, text stays selectable, links clickable. */
+    .predict {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .predict canvas { display: block; width: 100%; height: 100%; }
+    /* On narrow screens there is no whitespace beside the name, so the idle demo gets a
+       band above it. Zero height everywhere else. */
+    .predict-room { height: 0; }
+    @media (max-width: 560px) { .predict-room { height: 6.5rem; } }
+  </style>
+</head>
+
+<body>
+  <div class="lab-bar">
+    <div class="wrap">
+      <span><a href="/lab/">Lab</a> · <b>4 of 4 — The predicted path</b></span>
+      <span><a href="/lab/arm/">← Prev</a> &nbsp; <a href="/lab/belief/">Next →</a></span>
+    </div>
+  </div>
+
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap" id="top">
+    <!--
+      HERO. You may restructure the markup inside .hero to place your canvas
+      (e.g. a two-column grid, an absolutely positioned background layer, or a
+      band above the name), but the h1 / .lede / .kicker text and their styles
+      must stay exactly as they are here.
+    -->
+    <div class="hero">
+      <div class="predict" role="img" aria-label="A dotted line predicting where the cursor will go over the next second, inside a faint cone showing how uncertain that prediction is.">
+        <canvas aria-hidden="true"></canvas>
+      </div>
+      <div class="predict-room"></div>
+      <h1>Wenda Wang</h1>
+      <p class="lede">
+        Machine learning engineer working where vision, robotics and large models meet.
+        Currently Member of Technical Staff at <a href="https://elorian.ai" rel="noopener">Elorian</a>,
+        where I lead the robotics vertical.
+      </p>
+      <p class="kicker">
+        <span>Computer vision</span>
+        <span>Robot learning</span>
+        <span>ML infrastructure</span>
+        <span>Sunnyvale, California</span>
+      </p>
+    </div>
+
+    <section class="about" aria-label="About">
+      <p class="lab-note">Lab note: a Kalman filter predicting the cursor ~1 s ahead, with its uncertainty. Move in straight lines, then turn suddenly.</p>
+      <p>
+        I have spent the past decade building learning systems that see the world and act in it:
+        sim-to-real computer vision and autonomous-systems perception at Apple, a walking humanoid
+        at Noble Machines, and now visual reasoning models for robots at Elorian.
+      </p>
+      <p>
+        I think of myself as an engineer and builder before anything else. The work I am proudest of
+        is the kind you can point at — a model that shipped, a robot that walks.
+      </p>
+    </section>
+
+    <section id="now">
+      <h2 class="label">Now</h2>
+      <article class="entry">
+        <div class="when">2026 — present</div>
+        <h3 class="who"><a href="https://elorian.ai" rel="noopener">Elorian</a></h3>
+        <p class="role">Member of Technical Staff · Robotics</p>
+        <p class="desc">
+          Elorian is a visual reasoning lab founded by former Google DeepMind researchers, building
+          native multimodal models that reason directly over images, video, audio and text rather than
+          translating everything into words first. I lead the robotics vertical, bringing that kind of
+          visual reasoning into embodied settings.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Lab prototype — not linked from the site</span>
+  </footer>
+
+  <script>
+    (() => {
+      'use strict';
+      const root = document.documentElement, canvas = document.querySelector('.predict canvas'),
+            ctx = canvas.getContext('2d'), hero = document.querySelector('.hero'),
+            h1 = hero.querySelector('h1'), topBar = document.querySelector('.top'),
+            main = document.querySelector('main.wrap');
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let fine = matchMedia('(pointer: fine)').matches;
+
+      // ---- Model constants ----
+      const DT = 1 / 30;                    // pointer resampled at 30 Hz; the filter steps at that rate
+      const R = 1.5 * 1.5;                  // measurement noise (px²): pointer positions are nearly exact
+      const Q_MIN = 2000, Q_MAX = 80000;    // process-noise spectral density (px²/s³): straight ↔ turning
+      const A0 = 900;                       // px/s²: accelerations below this still count as "straight"
+      const H = 14, HS = 0.05, TAU = 0.45;  // horizon 14 × 50 ms = 0.7 s; predicted velocity decays, τ = 0.45 s
+      const REACH = 160;                    // px: at speed the horizon shortens so the drawn path never exceeds this
+      const TRAIL_T = 1;                    // s: trail behind the cursor fades over one second
+      const IDLE_T = 4, AWAY_T = 5, GHOST_T = 20; // s: ring fades after 4 s still; ghost after 5 s away / 20 s still
+      const PI2 = Math.PI * 2;
+
+      const col = {};
+      const theme = () => { const s = getComputedStyle(root); for (const k of ['ink-2', 'ink-3', 'accent']) col[k] = s.getPropertyValue('--' + k).trim(); };
+      theme();
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { theme(); reduced ? drawStatic() : wake(); });
+
+      // ---- A constant-velocity Kalman filter over one point, plus the trail of what it saw ----
+      // x and y are independent and share one 2×2 covariance [[A,B],[B,C]] (position, velocity), so the
+      // 1-σ position uncertainty is a circle of radius √A: the cone is drawn as the ±√A envelope.
+      class Tracker {
+        constructor() { this.alpha = 0; this.reset(0, 0); }
+        reset(x, y) {
+          this.px = x; this.py = y; this.vx = 0; this.vy = 0;
+          this.A = R; this.B = 0; this.C = 300 * 300;         // known position, unknown velocity
+          this.zx = x; this.zy = y; this.zs = []; this.acc = 0; this.q = Q_MIN;
+          this.trail = [];
+        }
+        observe(x, y, t) { this.zx = x; this.zy = y; this.trail.push({ x, y, t }); if (this.trail.length > 240) this.trail.shift(); }
+        step(t) {
+          const dt = DT, q = this.q, tr = this.trail, n = tr.length;
+          // the measurement at this step's exact time: interpolate the two latest raw samples
+          if (n > 1) {
+            const a = tr[n - 2], b = tr[n - 1], u = Math.min(1, Math.max(0, (t - a.t) / (b.t - a.t || 1)));
+            this.zx = a.x + (b.x - a.x) * u; this.zy = a.y + (b.y - a.y) * u;
+          }
+          // predict: constant velocity driven by white-noise acceleration of spectral density q
+          this.px += this.vx * dt; this.py += this.vy * dt;
+          let A = this.A + 2 * dt * this.B + dt * dt * this.C + q * dt * dt * dt / 3,
+              B = this.B + dt * this.C + q * dt * dt / 2, C = this.C + q * dt;
+          // update with the latest resampled pointer position (H = [1 0], so the gain is [A B]/S)
+          const S = A + R, K0 = A / S, K1 = B / S, nx = this.zx - this.px, ny = this.zy - this.py;
+          this.px += K0 * nx; this.vx += K1 * nx; this.py += K0 * ny; this.vy += K1 * ny;
+          this.A = A - K0 * A; this.B = B - K0 * B; this.C = C - K1 * B;
+          // adapt q: unmodelled acceleration = second difference of the samples over two 100 ms spans,
+          // squared and smoothed with a fast attack / slow release. Straight moves keep q at its floor
+          // (a confident, narrow cone); turns push it up (the cone opens, the filter trusts data more).
+          const zs = this.zs; zs.push(this.zx, this.zy); if (zs.length > 14) zs.splice(0, 2);
+          if (zs.length === 14) {
+            const s = 1 / (9 * dt * dt), ax = (zs[12] - 2 * zs[6] + zs[0]) * s, ay = (zs[13] - 2 * zs[7] + zs[1]) * s;
+            const a2 = ax * ax + ay * ay;
+            this.acc += (a2 - this.acc) * (a2 > this.acc ? 0.5 : 0.06);
+            this.q = Math.min(Q_MAX, Q_MIN + Math.max(0, this.acc - A0 * A0) * 0.005);
+          }
+        }
+        // Roll the model forward H steps with a decaying velocity (pointer moves end), propagating
+        // the covariance so uncertainty grows along the horizon. Returns points with 1-σ radius s.
+        horizon(x, y) {
+          let { vx, vy, A, B, C } = this;
+          // step length: 50 ms, or less when fast so the whole horizon is min(0.7 s, REACH / speed)
+          const h = Math.min(HS, REACH / Math.max(Math.hypot(vx, vy), 1e-6) / H), a = Math.exp(-h / TAU), q = this.q, pts = [];
+          pts.push({ x, y, s: Math.sqrt(A) });
+          for (let k = 1; k <= H; k++) {
+            x += vx * h; y += vy * h; vx *= a; vy *= a;
+            const A2 = A + 2 * h * B + h * h * C + q * h * h * h / 3;
+            B = a * (B + h * C) + q * h * h / 2; C = a * a * C + q * h; A = A2;
+            pts.push({ x, y, s: Math.sqrt(A) });
+          }
+          return pts;
+        }
+        // m: overall alpha, oy: vertical offset (document → viewport for the ghost), now: seconds,
+        // lead: time since the last filter step — the estimate is carried forward by it so the drawing
+        // moves at display rate even though the filter steps at 30 Hz. dim: halve hairlines over text.
+        draw(m, oy, now, lead = 0, dim = false) {
+          const tr = this.trail, x0 = this.px + this.vx * lead, y0 = this.py + this.vy * lead;
+          const quiet = (x1, y1, x2, y2) => dim && overText((x1 + x2) / 2, (y1 + y2) / 2) ? 0.5 : 1;
+          while (tr.length && now - tr[0].t > TRAIL_T) tr.shift();
+          ctx.lineWidth = 1; ctx.strokeStyle = col['ink-3'];
+          for (let i = 1; i < tr.length; i++) {                        // where it actually went
+            const u = 1 - (now - tr[i].t) / TRAIL_T, p = tr[i - 1], r = tr[i];
+            ctx.globalAlpha = m * 0.5 * u * Math.sqrt(u) * quiet(p.x, p.y, r.x, r.y);
+            ctx.beginPath(); ctx.moveTo(p.x, p.y + oy); ctx.lineTo(r.x, r.y + oy); ctx.stroke();
+          }
+          const sp = Math.hypot(this.vx, this.vy), f = Math.min(1, Math.max(0, (sp - 12) / 30));
+          if (f > 0) {
+            const pts = this.horizon(x0, y0), nx = -this.vy / sp, ny = this.vx / sp;   // unit normal to the path
+            for (const g of [1, -1]) {                                   // ±1σ envelope: the cone
+              for (let k = 1; k <= H; k++) {
+                const p = pts[k - 1], r = pts[k], u = k / H;
+                const x1 = p.x + g * nx * p.s, y1 = p.y + g * ny * p.s, x2 = r.x + g * nx * r.s, y2 = r.y + g * ny * r.s;
+                ctx.globalAlpha = m * f * 0.22 * (1 - u * u) * quiet(x1, y1, x2, y2);
+                ctx.beginPath(); ctx.moveTo(x1, y1 + oy); ctx.lineTo(x2, y2 + oy); ctx.stroke();
+              }
+            }
+            ctx.fillStyle = col.accent;                                  // the predicted path, one dot per step
+            let lx = pts[0].x, ly = pts[0].y, need = 6;
+            for (let k = 1; k <= H; k++) {
+              const r = pts[k]; if (Math.hypot(r.x - lx, r.y - ly) < need) continue;
+              lx = r.x; ly = r.y; need = 3;
+              ctx.globalAlpha = m * f * 0.85 * Math.pow(1 - k / (H + 1), 1.4);
+              ctx.beginPath(); ctx.arc(r.x, r.y + oy, 1.1, 0, PI2); ctx.fill();
+            }
+          }
+          ctx.globalAlpha = m * 0.55; ctx.strokeStyle = col['ink-2'];   // the estimate itself
+          ctx.beginPath(); ctx.arc(x0, y0 + oy, 3.5, 0, PI2); ctx.stroke();
+        }
+      }
+
+      // ---- Ghost: a calm reader's cursor for touch screens and idle pages. Deterministic strokes
+      // through pseudo-random waypoints in the hero's whitespace, smooth (Catmull-Rom) with a
+      // minimum-jerk speed profile, and a pause between strokes; the same filter watches it. ----
+      const crm = (p0, p1, p2, p3, t) => {
+        const t2 = t * t, t3 = t2 * t, w0 = -0.5 * t3 + t2 - 0.5 * t, w1 = 1.5 * t3 - 2.5 * t2 + 1,
+              w2 = -1.5 * t3 + 2 * t2 + 0.5 * t, w3 = 0.5 * t3 - 0.5 * t2;
+        return { x: w0 * p0.x + w1 * p1.x + w2 * p2.x + w3 * p3.x, y: w0 * p0.y + w1 * p1.y + w2 * p2.y + w3 * p3.y };
+      };
+      const ghost = {
+        reg: { x: 0, y: 0, w: 0, h: 0 }, tr: new Tracker(), seed: 0, pts: [], m: 0, t: 0, dur: 0, pause: 0, x: 0, y: 0,
+        rnd() { this.seed = (this.seed * 1664525 + 1013904223) >>> 0; return this.seed / 4294967296; },
+        point() { const r = this.reg; return { x: r.x + r.w * (0.14 + 0.72 * this.rnd()), y: r.y + r.h * (0.18 + 0.64 * this.rnd()) }; },
+        init() {
+          this.seed = 7; const p = this.point();
+          this.x = p.x; this.y = p.y; this.pts = [p, p]; this.m = 0; this.t = 0; this.dur = 0; this.pause = 1.2;
+          this.tr.reset(p.x, p.y);
+        },
+        begin() {                                                        // a new stroke through m waypoints
+          const m = this.rnd() < 0.45 ? 1 : this.rnd() < 0.6 ? 2 : 3, p = this.pts;
+          for (let k = 0; k <= m; k++) p.push(this.point());
+          let len = 0; for (let k = 1; k <= m; k++) len += Math.hypot(p[k + 1].x - p[k].x, p[k + 1].y - p[k].y);
+          this.m = m; this.t = 0; this.dur = Math.min(3.2, Math.max(0.9, len / 170)); this.pause = 0.7 + 0.9 * this.rnd();
+        },
+        step(now) {
+          this.t += DT;
+          if (this.t < this.dur) {
+            const s = this.t / this.dur, e = s * s * s * (10 - 15 * s + 6 * s * s) * this.m;   // minimum-jerk progress
+            const k = Math.min(this.m - 1, Math.floor(e)), p = this.pts, q = crm(p[k], p[k + 1], p[k + 2], p[k + 3], e - k);
+            this.x = q.x; this.y = q.y;
+          } else if (this.t > this.dur + this.pause) { this.pts = this.pts.slice(this.m, this.m + 2); this.begin(); }
+          this.tr.observe(this.x, this.y, now); this.tr.step(now);
+        },
+        draw(m, now, lead) {                                             // clipped to its whitespace, in document coords
+          const r = this.reg, oy = -scrollY;
+          ctx.save(); ctx.beginPath(); ctx.rect(r.x - 16, r.y - 16 + oy, r.w + 32, r.h + 32); ctx.clip();
+          this.tr.draw(m, oy, now, lead); ctx.restore();
+        }
+      };
+
+      // ---- Layout: the ghost lives beside the name when there is room, otherwise in the band above it.
+      // Text blocks are measured too: live hairlines crossing them are drawn at half alpha. ----
+      let boxes = [];
+      const textBox = el => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect(); };
+      const overText = (x, y) => { y += scrollY; return boxes.some(b => y >= b.t && y <= b.b && x >= b.l && x <= b.r); };
+      function measure() {
+        const w = main.getBoundingClientRect(), h = textBox(h1), t = topBar.getBoundingClientRect(), sy = scrollY;
+        boxes = [...document.querySelectorAll('.lab-bar, .top, .hero h1, .lede, .kicker, .about p, .label, .entry, footer')]
+          .map(el => { const b = textBox(el); return { l: b.left - 4, r: b.right + 4, t: b.top + sy - 2, b: b.bottom + sy + 2 }; });
+        const left = h.left, right = w.right - (h.left - w.left), top = t.bottom + 20 + sy;
+        const side = { x: h.right + 36, y: top, w: right - h.right - 36, h: h.bottom + sy - top };
+        const band = { x: left, y: top, w: right - left, h: h.top + sy - 24 - top };
+        const reg = side.w >= 220 ? side : band, o = ghost.reg;
+        if (Math.abs(reg.x - o.x) + Math.abs(reg.y - o.y) + Math.abs(reg.w - o.w) + Math.abs(reg.h - o.h) > 1) { ghost.reg = reg; ghost.init(); }
+      }
+      let dpr = 1;
+      function resize() {
+        dpr = Math.min(2, devicePixelRatio || 1);
+        canvas.width = Math.round(canvas.clientWidth * dpr); canvas.height = Math.round(canvas.clientHeight * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        measure();
+        reduced ? drawStatic() : wake();
+      }
+      let rt; const onResize = () => { clearTimeout(rt); rt = setTimeout(resize, 150); };
+      addEventListener('resize', onResize); addEventListener('orientationchange', onResize);
+      if (document.fonts) document.fonts.ready.then(() => { measure(); reduced ? drawStatic() : wake(); });
+
+      // ---- Reduced motion: one static frame of the ghost mid-stroke, anchored to the hero ----
+      function drawStatic() {
+        ghost.init(); const n = Math.round(4.4 / DT);
+        for (let i = 1; i <= n; i++) ghost.step(i * DT);
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        ghost.draw(0.6, n * DT);
+      }
+      if (reduced) { resize(); addEventListener('scroll', drawStatic, { passive: true }); return; }
+
+      // ---- Live loop ----
+      const live = new Tracker();
+      const t0 = performance.now() / 1000;
+      let ptrT = -1e9, awayT = t0 - AWAY_T + 1.5, away = true, heroVis = true, ghostOn = false;
+      let running = false, last = 0, rem = 0, timer = 0;   // rem: fixed-step time carried between frames
+      const ease = (o, target, dt, rate) => { o.alpha += (target - o.alpha) * (1 - Math.exp(-rate * dt)); };
+
+      function frame(nowMs) {
+        if (!running) return;
+        const now = nowMs / 1000, dt = Math.min(0.05, Math.max(0, now - last)); last = now;
+        const idle = now - ptrT, wantLive = fine && !away && idle < IDLE_T;
+        const wantGhost = heroVis && (!fine || (away ? now - awayT > AWAY_T : idle > GHOST_T));
+        if (wantGhost && !ghostOn) ghost.init();
+        ghostOn = wantGhost;
+        ease(live, wantLive ? 1 : 0, dt, wantLive ? 8 : away ? 5 : 3.5);
+        ease(ghost.tr, wantGhost ? 1 : 0, dt, wantGhost ? 1.2 : 3);
+        const liveOn = wantLive || live.alpha > 0.003, ghostVis = wantGhost || ghost.tr.alpha > 0.003;
+        for (rem += dt; rem >= DT; rem -= DT) {                          // fixed-step physics, at wall time now − rem
+          if (liveOn) live.step(now - rem);
+          if (ghostVis) ghost.step(now - rem);
+        }
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        if (ghostVis) ghost.draw(0.6 * ghost.tr.alpha, now, rem);
+        if (liveOn) live.draw(live.alpha, 0, now, rem, true);
+        if (liveOn || ghostVis) requestAnimationFrame(frame);
+        else {                                                           // nothing to show: stop, and wake for the ghost later
+          running = false; clearTimeout(timer);
+          if (heroVis && fine) { const at = away ? awayT + AWAY_T : ptrT + GHOST_T; timer = setTimeout(wake, Math.max(0, (at - now) * 1000 + 30)); }
+        }
+      }
+      function wake() {
+        if (running || document.hidden) return;
+        running = true; last = performance.now() / 1000; rem = 0; requestAnimationFrame(frame);
+      }
+
+      addEventListener('pointermove', e => {
+        if (e.pointerType === 'touch') return;
+        fine = true;
+        const now = performance.now() / 1000;
+        if (away || live.alpha < 0.02) live.reset(e.clientX, e.clientY);   // start at the pointer, never from elsewhere
+        away = false; ptrT = now;
+        live.observe(e.clientX, e.clientY, now);
+        wake();
+      }, { passive: true });
+      const leave = e => { if (!e.relatedTarget && !away) { away = true; awayT = performance.now() / 1000; wake(); } };
+      document.addEventListener('mouseout', leave);
+      root.addEventListener('pointerleave', leave);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) { running = false; clearTimeout(timer); } else wake(); });
+      new IntersectionObserver(es => { heroVis = es[0].isIntersecting; wake(); }, { threshold: 0 }).observe(hero);
+      resize();
+    })();
+  </script>
+</body>
+</html>
