@@ -15,282 +15,25 @@
   <meta property="og:description" content="Machine learning engineer working where vision, robotics and large models meet.">
   <meta property="og:url" content="https://wwd7086.github.io/">
   <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@wwd7086">
 
   <link rel="canonical" href="https://wwd7086.github.io/">
+  <link rel="alternate" type="application/atom+xml" title="Wenda Wang — Writing" href="/feed.xml">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #f5f2ec;
-      --bg-2: #ebe6dd;
-      --ink: #2a2724;
-      --ink-2: #5d5851;
-      --ink-3: #8f8880;
-      --rule: #d8d1c5;
-      --accent: #7c8c79;
-      --accent-2: #9a8a76;
-
-      --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
-      --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1b1a18;
-        --bg-2: #232120;
-        --ink: #e9e3d9;
-        --ink-2: #b5aea3;
-        --ink-3: #807a71;
-        --rule: #35322e;
-        --accent: #9daa99;
-        --accent-2: #b3a48f;
-      }
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--serif);
-      font-size: 17px;
-      line-height: 1.6;
-      -webkit-text-size-adjust: 100%;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-      text-decoration-color: var(--accent);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.18em;
-      transition: color 120ms ease, text-decoration-color 120ms ease;
-    }
-    a:hover { color: var(--accent); }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
-
-    ::selection { background: var(--accent); color: var(--bg); }
-
-    .wrap {
-      width: 100%;
-      max-width: 41rem;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    /* ---- Top bar ---- */
-    .top {
-      padding: 1.75rem 0 0;
-      font-family: var(--sans);
-      font-size: 0.8rem;
-      letter-spacing: 0.01em;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .top .mark {
-      text-decoration: none;
-      color: var(--ink);
-      font-weight: 500;
-    }
-    .top nav { display: flex; gap: 1.25rem; }
-    .top nav a {
-      text-decoration: none;
-      color: var(--ink-3);
-    }
-    .top nav a:hover { color: var(--ink); }
-
-    /* ---- Hero ---- */
-    .hero { padding: 6.5rem 0 3.5rem; }
-    h1 {
-      font-family: var(--serif);
-      font-weight: 400;
-      font-size: clamp(2.6rem, 7vw, 3.75rem);
-      line-height: 1.02;
-      letter-spacing: -0.015em;
-      margin: 0 0 1.5rem;
-      font-variation-settings: "opsz" 72;
-    }
-    .lede {
-      font-size: clamp(1.25rem, 2.6vw, 1.45rem);
-      line-height: 1.4;
-      color: var(--ink-2);
-      margin: 0 0 1.5rem;
-      max-width: 34rem;
-      font-weight: 300;
-    }
-    .lede a { color: var(--ink); }
-    .kicker {
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      color: var(--ink-3);
-      margin: 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem 0;
-    }
-    .kicker span:not(:last-child)::after {
-      content: "·";
-      margin: 0 0.6rem;
-      color: var(--rule);
-    }
-
-    /* ---- Sections ---- */
-    section { padding: 2.75rem 0; border-top: 1px solid var(--rule); }
-    .label {
-      font-family: var(--sans);
-      font-size: 0.7rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--ink-3);
-      margin: 0 0 1.75rem;
-    }
-    .about p { margin: 0 0 1.1rem; font-size: 1.1rem; max-width: 36rem; }
-    .about p:last-child { margin-bottom: 0; }
-
-    /* ---- Entries ---- */
-    .entry {
-      display: grid;
-      grid-template-columns: 7.5rem 1fr;
-      column-gap: 1.5rem;
-      row-gap: 0.15rem;
-      padding: 0 0 2.25rem;
-    }
-    .entry:last-child { padding-bottom: 0; }
-    .when {
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      color: var(--ink-3);
-      font-variant-numeric: tabular-nums;
-      padding-top: 0.42rem;
-      white-space: nowrap;
-    }
-    .who {
-      margin: 0;
-      font-weight: 500;
-      font-size: 1.32rem;
-      line-height: 1.25;
-      letter-spacing: -0.005em;
-    }
-    .who a { text-decoration: none; }
-    .who a:hover { text-decoration: underline; }
-    .role {
-      margin: 0.15rem 0 0.7rem;
-      font-style: italic;
-      color: var(--ink-2);
-      font-size: 1.02rem;
-    }
-    .desc { margin: 0; color: var(--ink-2); max-width: 32rem; }
-    .desc + .desc { margin-top: 0.75rem; }
-    .entry > .who, .entry > .role, .entry > .desc { grid-column: 2; }
-
-    /* ---- Publication ---- */
-    .pub { max-width: 36rem; }
-    .pub .title {
-      margin: 0 0 0.4rem;
-      font-size: 1.32rem;
-      font-weight: 500;
-      line-height: 1.3;
-      letter-spacing: -0.005em;
-    }
-    .pub .authors { margin: 0 0 0.6rem; color: var(--ink-2); font-size: 1rem; }
-    .pub .authors b { font-weight: 500; color: var(--ink); }
-    .pub .venue {
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      color: var(--ink-3);
-      margin: 0 0 0.9rem;
-    }
-    .pub .venue em {
-      font-style: normal;
-      color: var(--accent-2);
-    }
-    .pub .desc { margin-bottom: 0.9rem; }
-    .links {
-      font-family: var(--sans);
-      font-size: 0.8rem;
-      display: flex;
-      gap: 1.25rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    /* ---- Contact ---- */
-    .contact ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      grid-template-columns: 7.5rem 1fr;
-      row-gap: 0.55rem;
-      column-gap: 1.5rem;
-    }
-    .contact li { display: contents; }
-    .contact .k {
-      font-family: var(--sans);
-      font-size: 0.78rem;
-      color: var(--ink-3);
-      padding-top: 0.25rem;
-    }
-    .contact .v { font-size: 1.05rem; }
-
-    /* ---- Footer ---- */
-    footer {
-      margin-top: auto;
-      padding: 3rem 0 2.5rem;
-      border-top: 1px solid var(--rule);
-      font-family: var(--sans);
-      font-size: 0.75rem;
-      color: var(--ink-3);
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 560px) {
-      html { font-size: 16px; }
-      .hero { padding: 4.5rem 0 2.75rem; }
-      .top nav { gap: 1rem; }
-      .entry { grid-template-columns: 1fr; row-gap: 0.1rem; }
-      .entry > .who, .entry > .role, .entry > .desc { grid-column: 1; }
-      .when { padding-top: 0; margin-bottom: 0.3rem; }
-      .contact ul { grid-template-columns: 1fr; row-gap: 0.15rem; }
-      .contact .k { padding-top: 0.6rem; }
-      .contact li:first-child .k { padding-top: 0; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      a { transition: none; }
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
   <header class="wrap top">
-    <a class="mark" href="#top">Wenda Wang</a>
+    <a class="mark" href="/">Wenda Wang</a>
     <nav aria-label="Sections">
       <a href="#now">Now</a>
       <a href="#before">Before</a>
-      <a href="#writing">Writing</a>
+      <a href="/blog/">Writing</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
@@ -360,7 +103,7 @@
         <p class="role">Staff Machine Learning Engineer</p>
         <p class="desc">
           Eight years, from junior engineer to Staff. Computer vision first — including
-          <a href="#writing">SimGAN</a>, a sim-to-real approach that won the CVPR 2017 Best Paper award —
+          <a href="#publication">SimGAN</a>, a sim-to-real approach that won the CVPR 2017 Best Paper award —
           then perception for autonomous systems in the Special Projects Group, with stretches in NLP,
           recommendation systems, and the distributed training infrastructure underneath all of it.
         </p>
@@ -378,6 +121,33 @@
     </section>
 
     <section id="writing">
+      <h2 class="label">Writing <a class="more" href="/blog/">All essays →</a></h2>
+
+      <ul class="post-list">
+        <li>
+          <div class="when">April 2026</div>
+          <div>
+            <h3 class="who"><a href="/blog/two-paradigms-of-ai/">The Two Paradigms of AI</a></h3>
+            <p class="desc">
+              Language models and world models have each succeeded on their own terms. AGI will come
+              from unifying them correctly, not from choosing between them.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class="when">January 2026</div>
+          <div>
+            <h3 class="who"><a href="/blog/llm-is-the-new-compiler/">The LLM is the New Compiler</a></h3>
+            <p class="desc">
+              If the LLM is a compiler, the natural-language blueprint is the source of truth — and
+              “vibe coding” has to grow up into intent-based engineering.
+            </p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="publication">
       <h2 class="label">Publication</h2>
 
       <article class="pub">
@@ -404,6 +174,7 @@
         <li><span class="k">Email</span><span class="v"><a href="mailto:wwd7086@gmail.com">wwd7086@gmail.com</a></span></li>
         <li><span class="k">GitHub</span><span class="v"><a href="https://github.com/wwd7086" rel="noopener">github.com/wwd7086</a></span></li>
         <li><span class="k">LinkedIn</span><span class="v"><a href="https://www.linkedin.com/in/wendaw/" rel="noopener">linkedin.com/in/wendaw</a></span></li>
+        <li><span class="k">X</span><span class="v"><a href="https://x.com/wwd7086" rel="noopener">x.com/wwd7086</a></span></li>
       </ul>
     </section>
   </main>

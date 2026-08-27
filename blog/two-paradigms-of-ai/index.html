@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Two Paradigms of AI — Wenda Wang</title>
+  <meta name="description" content="Language models and world models have each succeeded on their own terms. AGI will come from unifying them correctly, not from choosing between them.">
+  <meta name="author" content="Wenda Wang">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Two Paradigms of AI">
+  <meta property="og:description" content="Language models and world models have each succeeded on their own terms. AGI will come from unifying them correctly, not from choosing between them.">
+  <meta property="og:url" content="https://wwd7086.github.io/blog/two-paradigms-of-ai/">
+  <meta property="article:published_time" content="2026-04-07">
+  <meta property="article:author" content="Wenda Wang">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@wwd7086">
+  <link rel="canonical" href="https://wwd7086.github.io/blog/two-paradigms-of-ai/">
+  <link rel="alternate" type="application/atom+xml" title="Wenda Wang — Writing" href="/feed.xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/" aria-current="page">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <article>
+      <header class="article-head">
+        <p class="label">Essay</p>
+        <h1>The Two Paradigms of AI</h1>
+        <p class="byline">
+          <time datetime="2026-04-07">April 7, 2026</time>
+          &nbsp;·&nbsp; Originally published on <a href="https://x.com/wwd7086/status/2041417630603522497" rel="noopener">X</a>
+        </p>
+      </header>
+
+      <div class="prose">
+        <p>AI has advanced along two highly successful but fundamentally different paths.</p>
+
+        <p>
+          The first path is the <strong>language paradigm</strong>. Large language models learn by
+          predicting tokens from massive corpora of human text. This produces remarkable capabilities in
+          reasoning, abstraction, planning, coding, and communication. Language is an extremely efficient
+          compression layer for human knowledge, so models trained on it inherit a surprising amount of
+          logic and structure. But this paradigm has a limit: symbols are not the world. A language model
+          can relate “apple,” “red,” and “gravity,” yet it does not directly experience color, force, or
+          physical consequence. Its intelligence is powerful, but only weakly grounded.
+        </p>
+
+        <p>
+          The second path is the <strong>world-model paradigm</strong>. These systems learn from sensory
+          streams such as video, audio, proprioception, and action. They predict how the physical world
+          evolves: what happens next, what changes under intervention, what actions lead to which outcomes.
+          This paradigm is naturally suited for intuitive physics, embodiment, spatial reasoning, and
+          control. It is how a robot, an autonomous system, or perhaps even an infant begins to understand
+          reality. But world models have their own limit: they are often weak at abstraction, symbolic
+          manipulation, explicit logic, and long-horizon deliberation.
+        </p>
+
+        <p>
+          Today, much of AI progress is implicitly trying to merge these two paradigms. But simple fusion
+          has not solved the problem. In many multimodal systems, text still dominates. Sensory inputs are
+          often forced into token spaces and training objectives originally designed for language. The
+          result is not true unification, but a compromise: perception is treated like noisy text, while
+          reasoning is asked to operate over representations poorly matched to the structure of the
+          physical world.
+        </p>
+
+        <p>This is the central challenge for the next era of AI.</p>
+
+        <p>
+          The path to AGI is not just “more modalities” or “bigger models.” It is the creation of a system
+          in which <strong>symbolic intelligence and grounded predictive intelligence reinforce each other
+          without collapsing into one another</strong>.
+        </p>
+
+        <p>
+          That likely requires a new architecture, not just more scale. One plausible direction is a
+          <strong>dual-process system</strong>:
+        </p>
+
+        <ul>
+          <li>a <strong>fast world-facing substrate</strong> for perception, latent state tracking, dynamics prediction, and control,</li>
+          <li>and a <strong>slower symbolic substrate</strong> for planning, language, explanation, and abstract reasoning.</li>
+        </ul>
+
+        <p>
+          Another direction is to build a <strong>shared latent space</strong> where language and sensory
+          data meet at a more abstract level, instead of forcing one to masquerade as the other. Whether
+          through joint-embedding methods, unified latent representations, or some hybrid architecture,
+          the key idea is the same: true intelligence requires a representation layer where meaning is both
+          <strong>computable</strong> and <strong>grounded</strong>.
+        </p>
+
+        <p>
+          This matters most in the physical world. Robots, autonomous systems, and real-world agents cannot
+          rely on language alone. They must track uncertainty, predict consequences, respond in real time,
+          and act under the constraints of embodiment. At the same time, they need language-like abilities
+          to plan, communicate, generalize, and reason across tasks. The future is therefore not pure LLMs,
+          and not pure world models, but an architecture that combines the strengths of both.
+        </p>
+
+        <p class="coda">The first wave of AI captured the structure of human language.</p>
+        <p>The next wave must capture the structure of reality itself.</p>
+        <p>AGI will emerge not from choosing between these paradigms, but from unifying them correctly.</p>
+      </div>
+
+      <nav class="article-foot" aria-label="Article navigation">
+        <a href="/blog/">← All writing</a>
+        <a href="/blog/llm-is-the-new-compiler/">Previous: The LLM is the New Compiler →</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Sunnyvale, California</span>
+  </footer>
+</body>
+</html>

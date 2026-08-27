@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The LLM is the New Compiler — Wenda Wang</title>
+  <meta name="description" content="Moving from “vibe coding” to intent-based engineering: if the LLM is a compiler, the natural-language blueprint is the source of truth.">
+  <meta name="author" content="Wenda Wang">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The LLM is the New Compiler: Moving From “Vibe Coding” to Intent-Based Engineering">
+  <meta property="og:description" content="If the LLM is a compiler, the natural-language blueprint is the source of truth.">
+  <meta property="og:url" content="https://wwd7086.github.io/blog/llm-is-the-new-compiler/">
+  <meta property="article:published_time" content="2026-01-29">
+  <meta property="article:author" content="Wenda Wang">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@wwd7086">
+  <link rel="canonical" href="https://wwd7086.github.io/blog/llm-is-the-new-compiler/">
+  <link rel="alternate" type="application/atom+xml" title="Wenda Wang — Writing" href="/feed.xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang</a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/" aria-current="page">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <article>
+      <header class="article-head">
+        <p class="label">Essay</p>
+        <h1>The LLM is the New Compiler: Moving From “Vibe Coding” to Intent-Based Engineering</h1>
+        <p class="byline">
+          <time datetime="2026-01-29">January 29, 2026</time>
+          &nbsp;·&nbsp; Originally published on <a href="https://x.com/wwd7086/status/2017143365758763124" rel="noopener">X</a>
+        </p>
+      </header>
+
+      <div class="prose">
+        <p>
+          History in computer science is a story of rising abstractions. We moved from toggling switches
+          to Assembly, from Assembly to C, and from C to Python. Each step traded granular control for
+          human clarity.
+        </p>
+
+        <p>We are now arriving at the next rung on the ladder.</p>
+
+        <ul>
+          <li><strong>Old Stack:</strong> Source Code <span class="arrow">→</span> Compiler <span class="arrow">→</span> Assembly</li>
+          <li><strong>New Stack:</strong> Blueprint (Natural Language) <span class="arrow">→</span> LLM Agent <span class="arrow">→</span> Source Code</li>
+        </ul>
+
+        <p>
+          If we accept this paradigm—that the <strong>LLM is the new compiler</strong>—then the way we
+          currently interact with AI (chatting in a tiny box) is fundamentally broken. We are treating a
+          compiler like a chatroom.
+        </p>
+
+        <p>Here is how we tame the beast and move from “Vibe Coding” to true System Engineering.</p>
+
+        <h2>1. The Blueprint: The New Source of Truth</h2>
+
+        <p>
+          In traditional engineering, the code is the source of truth. If you lose the binary but keep the
+          source code, you are safe. In the AI era, the <strong>Blueprint</strong>—the natural language
+          intent—must become the source of truth.
+        </p>
+
+        <p>
+          The Blueprint is a higher-level abstraction. It is the “stem” of the leaf. Currently, we treat
+          prompts as disposable commands typed into a CLI. This is madness. Imagine trying to build a
+          complex C++ application by typing the entire source code into a command-line argument every time
+          you wanted to compile.
+        </p>
+
+        <p><strong>The Golden Rule of the New Stack:</strong></p>
+
+        <blockquote>
+          <p>
+            <strong>The “Delete Test”:</strong> You should be able to delete your entire codebase (the
+            <code>/src</code> folder), keep only your Blueprint, and regenerate the exact same application
+            structure in one shot.
+          </p>
+        </blockquote>
+
+        <p>If you can’t do that, your Blueprint is insufficient, and you are managing “leaky” abstractions.</p>
+
+        <h2>2. Interactive Compilation vs. One-Shot Compilation</h2>
+
+        <p>Traditional compilation is deterministic and one-shot. You run <code>gcc</code>, and it works or it fails.</p>
+
+        <p>
+          LLM compilation is <strong>conversational and probabilistic</strong>. When an Agent writes code,
+          it is an interactive loop. You don't just “re-compile” when there is an error; you provide
+          feedback.
+        </p>
+
+        <ul>
+          <li>
+            <strong>The Trap:</strong> We often fix the code through conversation but fail to update the
+            original prompt. This leads to “drift.” The code works, but the Blueprint is outdated.
+          </li>
+          <li>
+            <strong>The Solution:</strong> All conversational feedback must be condensed and “back-ported”
+            to the Blueprint. The conversation is just a staging area; the Blueprint is the commit history.
+          </li>
+        </ul>
+
+        <h2>3. The Reversible Compiler</h2>
+
+        <p>One of the most powerful features of this new stack is that it is <strong>bi-directional</strong>.</p>
+
+        <ul>
+          <li><strong>Forward (Write):</strong> Blueprint <span class="arrow">→</span> Code.</li>
+          <li><strong>Reverse (Read):</strong> Code <span class="arrow">→</span> Blueprint.</li>
+        </ul>
+
+        <p>
+          When you open a legacy codebase, you can now “reverse compile” it. You ask the Agent to generate
+          the Blueprint <em>from</em> the existing code. This turns “reading documentation” into an active
+          archaeological process.
+        </p>
+
+        <p>
+          Effective engineering is now the management of this two-way street: Reading code to update the
+          Blueprint, and refining the Blueprint to update the code.
+        </p>
+
+        <h2>4. Redefining the “Commit”</h2>
+
+        <p>In this world, what is a git commit?</p>
+
+        <p>
+          Currently, a commit is a “diff” of the code lines. In the future, a commit should be a
+          <strong>modification of the Blueprint.</strong>
+        </p>
+
+        <ol>
+          <li><strong>Drafting:</strong> You have a conversation with the Agent to implement a feature.</li>
+          <li><strong>Iterating:</strong> The Agent generates code, you fix bugs together.</li>
+          <li><strong>Condensing:</strong> Before merging, the Agent summarizes the entire chaotic conversation into a crystallized update to the Blueprint.</li>
+          <li><strong>Committing:</strong> You commit the updated Blueprint <em>and</em> the synchronized code.</li>
+        </ol>
+
+        <p>
+          We must stop “hand-writing” the implementation details. Just as we rarely write inline Assembly
+          today, we should treat the generated code as “read-only” artifacts in 90% of cases, only to be
+          touched when the abstraction leaks.
+        </p>
+
+        <h2>5. Conclusion: Taming the Beast</h2>
+
+        <p>
+          “Vibe Coding”—randomly chatting until it works—is not scalable. It relies on luck and specific
+          model versions.
+        </p>
+
+        <p>
+          To turn this into engineering, we need <strong>systematic prompt management.</strong> We need
+          version control for our intents, not just our outputs. We need to stop treating the LLM as a
+          magic chatbot and start treating it as a deterministic compiler for a new, natural language
+          programming syntax.
+        </p>
+
+        <p class="coda">The future isn't about writing better code; it's about writing better Blueprints.</p>
+      </div>
+
+      <nav class="article-foot" aria-label="Article navigation">
+        <a href="/blog/">← All writing</a>
+        <a href="/blog/two-paradigms-of-ai/">Next: The Two Paradigms of AI →</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Sunnyvale, California</span>
+  </footer>
+</body>
+</html>
