@@ -69,7 +69,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 
 /* ---- Top bar ---- */
 .top {
-  padding: 1.75rem 0 0;
+  padding-top: 1.75rem;   /* sides come from .wrap — a shorthand here would erase them */
   font-family: var(--sans);
   font-size: 0.8rem;
   letter-spacing: 0.01em;
@@ -305,7 +305,8 @@ section { padding: 2.75rem 0; border-top: 1px solid var(--rule); }
 /* ---- Footer ---- */
 footer {
   margin-top: auto;
-  padding: 3rem 0 2.5rem;
+  padding-top: 3rem;      /* sides come from .wrap */
+  padding-bottom: 2.5rem;
   border-top: 1px solid var(--rule);
   font-family: var(--sans);
   font-size: 0.75rem;
@@ -320,7 +321,10 @@ footer {
   html { font-size: 16px; }
   .hero { padding: 4.5rem 0 2.75rem; }
   .article-head { padding: 3.5rem 0 2rem; }
-  .top nav { gap: 1rem; }
+  /* the name and the nav each get their own line, with room to breathe */
+  .top { flex-wrap: wrap; row-gap: 0.85rem; padding-top: 1.4rem; }
+  .top nav { width: 100%; gap: 1.4rem; }
+  .top nav a { padding: 0.1rem 0; }
   .entry, .post-list li { grid-template-columns: 1fr; row-gap: 0.1rem; }
   .entry > .who, .entry > .role, .entry > .desc { grid-column: 1; }
   .when { padding-top: 0; margin-bottom: 0.3rem; }
