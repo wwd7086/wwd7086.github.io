@@ -38,7 +38,10 @@
     "description": "Builder and engineer, working where vision, robotics and large models meet.",
     "jobTitle": "Member of Technical Staff",
     "worksFor": { "@type": "Organization", "name": "Elorian", "url": "https://elorian.ai" },
-    "alumniOf": { "@type": "CollegeOrUniversity", "name": "Carnegie Mellon University" },
+    "alumniOf": [
+      { "@type": "CollegeOrUniversity", "name": "Carnegie Mellon University" },
+      { "@type": "CollegeOrUniversity", "name": "East China University of Science and Technology" }
+    ],
     "knowsAbout": ["Computer vision", "Robot learning", "Machine learning infrastructure", "Humanoid robotics"],
     "address": { "@type": "PostalAddress", "addressLocality": "Sunnyvale", "addressRegion": "CA", "addressCountry": "US" },
     "sameAs": [
@@ -129,13 +132,22 @@
       <article class="entry" id="noble">
         <div class="when">2024 — 2026</div>
         <h3 class="who"><a href="https://www.noblemachines.ai" rel="noopener">Noble Machines</a></h3>
-        <p class="role">Co-founder, now Advisor</p>
+        <p class="role">Co-founder &amp; Head of AI, now Advisor</p>
         <p class="desc">
           Humanoid robots for the hazardous, physically demanding industrial work that keeps the world
-          moving. We started as Under Control Robotics out of South Park Commons, where a team of four
-          built a walking humanoid prototype from scratch in about four months. I have since stepped back
-          into an advisory role.
+          moving. We started as Under Control Robotics out of South Park Commons, walked a humanoid
+          from scratch in four months, and within ten shipped a live end-to-end autonomous demo at GTC —
+          the only long-horizon loco-manipulation task shown at the event. I led the AI effort: the
+          skill-learning pipeline, the sim-to-real whole-body controller, and the ML factory behind them,
+          through a $15M seed and a $35M+ Series A. I have since stepped back into an advisory role.
         </p>
+        <ul class="links">
+          <li><a href="https://www.linkedin.com/posts/autonomous-industrial-work-at-gtc-2026-ugcPost-7462904578351661056-T_dz/" rel="noopener">GTC autonomy demo</a></li>
+          <li><a href="https://www.linkedin.com/posts/wendaw_nvidiagtc-activity-7443022020742688768-zFo_" rel="noopener">Full walkthrough</a></li>
+          <li><a href="https://www.linkedin.com/posts/wendaw_stairs-and-ramps-on-repeat-activity-7335710723936854016-1j9E" rel="noopener">Stairs &amp; ramps</a></li>
+          <li><a href="https://www.linkedin.com/posts/wendaw_one-more-thing-heavy-pushes-and-still-activity-7336437708484943872-fPaO" rel="noopener">Push recovery</a></li>
+          <li><a href="https://www.noblemachines.ai/blog/beyond-the-demo-building-a-learning-stack-for-industrial-autonomy" rel="noopener">Learning-stack notes</a></li>
+        </ul>
       </article>
 
       <article class="entry" id="apple">
@@ -143,21 +155,28 @@
         <h3 class="who">Apple</h3>
         <p class="role">Staff Machine Learning Engineer</p>
         <p class="desc">
-          Eight years, from junior engineer to Staff. Computer vision first — including
-          <a href="#publication">SimGAN</a>, a sim-to-real approach that won the CVPR 2017 Best Paper award —
-          then perception for autonomous systems in the Special Projects Group, with stretches in NLP,
-          recommendation systems, and the distributed training infrastructure underneath all of it.
+          Eight years in the Special Projects Group, from junior engineer to Staff.
+          <a href="#publication">SimGAN</a> early on — sim-to-real training that won the CVPR 2017
+          Best Paper award — then autonomy perception: the end-to-end temporal BEV perception model,
+          a camera-centric redesign of the stack that cut its LiDAR dependency, and the ML platform
+          that carried the team's training and evaluation at scale.
         </p>
       </article>
 
       <article class="entry" id="cmu">
-        <div class="when">2016</div>
+        <div class="when">2014 — 2015</div>
         <h3 class="who">Carnegie Mellon University</h3>
         <p class="role">M.S. in Robotic Systems Development (MRSD) · Robotics Institute</p>
         <p class="desc">
           Perception and autonomy, back when self-driving cars were the problem everyone wanted
           to work on.
         </p>
+      </article>
+
+      <article class="entry">
+        <div class="when">2010 — 2014</div>
+        <h3 class="who">East China University of Science and Technology</h3>
+        <p class="role">B.S. in EE &amp; CS · joint program with Lübeck University of Applied Sciences</p>
       </article>
     </section>
 
@@ -189,7 +208,7 @@
     </section>
 
     <section id="publication">
-      <h2 class="label">Publication</h2>
+      <h2 class="label">Publication &amp; Patents</h2>
 
       <article class="pub">
         <h3 class="title">Learning from Simulated and Unsupervised Images through Adversarial Training</h3>
@@ -207,6 +226,17 @@
           <li><a href="https://machinelearning.apple.com/research/gan" rel="noopener">Apple ML Research</a></li>
         </ul>
       </article>
+
+      <ul class="post-list patents">
+        <li>
+          <div class="when">2020</div>
+          <p class="desc">U.S. Patent — “Key Point Recognition With Uncertainty Measurement.”</p>
+        </li>
+        <li>
+          <div class="when">2018</div>
+          <p class="desc">U.S. Patent — “Large Scale Active Learning for Deep Learning Systems.”</p>
+        </li>
+      </ul>
     </section>
 
     <section id="conversations">

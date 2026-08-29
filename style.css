@@ -212,11 +212,15 @@ section { padding: 2.75rem 0; border-top: 1px solid var(--rule); }
   font-family: var(--sans);
   font-size: 0.8rem;
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
+.entry .links { grid-column: 2; margin-top: 0.9rem; }
+.patents { margin-top: 2.25rem; }
+.patents li { padding-bottom: 0.5rem; }
 
 /* ---- Contact ---- */
 .contact ul {
@@ -326,7 +330,7 @@ footer {
   .top nav { width: 100%; gap: 1.4rem; }
   .top nav a { padding: 0.1rem 0; }
   .entry, .post-list li { grid-template-columns: 1fr; row-gap: 0.1rem; }
-  .entry > .who, .entry > .role, .entry > .desc { grid-column: 1; }
+  .entry > .who, .entry > .role, .entry > .desc, .entry > .links { grid-column: 1; }
   .when { padding-top: 0; margin-bottom: 0.3rem; }
   .contact ul { grid-template-columns: 1fr; row-gap: 0.15rem; }
   .contact .k { padding-top: 0.6rem; }
