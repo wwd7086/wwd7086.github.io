@@ -8,7 +8,7 @@ Plain static HTML — no build step.
 - `blog/index.html` — writing index
 - `blog/<slug>/index.html` — one page per essay
 - `style.css` — shared styles
-- the marginalia: the interactive margin element lives inline in `index.html` (scene per section: arm / attention / Jansen leg / driving tracker); it hides below ~1080px windows and under reduced-motion preferences
+- `marginalia.js` — the interactive element. Desktop: a fixed margin canvas whose scene follows the section (arm / attention / Jansen leg / driving tracker), with the arm periodically swapping the rotating term in the lede. Phones: the same scenes as small in-flow vignette bands under their sections, touch-reactive. Static under reduced-motion.
 - `feed.xml` — Atom feed for the essays
 - `fonts/` — self-hosted Newsreader + Inter (woff2, SIL OFL); loaded via `fonts/fonts.css`
 - `og/` — social-card images referenced by the `og:image` tags
