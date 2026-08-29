@@ -8,6 +8,7 @@ Plain static HTML — no build step.
 - `blog/index.html` — writing index
 - `blog/<slug>/index.html` — one page per essay
 - `style.css` — shared styles
+- the marginalia: the interactive margin element lives inline in `index.html` (scene per section: arm / attention / Jansen leg / driving tracker); it hides below ~1080px windows and under reduced-motion preferences
 - `feed.xml` — Atom feed for the essays
 
 To add an essay: copy an existing `blog/<slug>/` folder, edit the content, then add it to
