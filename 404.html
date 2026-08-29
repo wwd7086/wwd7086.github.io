@@ -4,23 +4,208 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Not found — Wenda Wang</title>
+  <meta name="robots" content="noindex">
   <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="/fonts/fonts.css">
   <style>
-    :root { --bg:#f5f2ec; --ink:#2a2724; --ink-3:#8f8880; --accent:#7c8c79; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#1b1a18; --ink:#e9e3d9; --ink-3:#807a71; --accent:#9daa99; } }
+    :root { --bg:#f5f2ec; --ink:#2a2724; --ink-3:#8f8880; --rule:#d8d1c5; --accent:#7c8c79; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#1b1a18; --ink:#e9e3d9; --ink-3:#807a71; --rule:#35322e; --accent:#9daa99; } }
+    * { box-sizing: border-box; }
     html { background:var(--bg); color:var(--ink); font-family:"Newsreader","Iowan Old Style",Georgia,serif; }
     body { margin:0; min-height:100vh; display:grid; place-items:center; padding:2rem; }
-    main { max-width:30rem; }
+    main { max-width:30rem; position:relative; z-index:1; }
     h1 { font-weight:400; font-size:2.5rem; margin:0 0 .75rem; letter-spacing:-.01em; }
     p { color:var(--ink-3); margin:0 0 1.25rem; }
     a { color:var(--ink); text-decoration-color:var(--accent); text-underline-offset:.18em; }
+    canvas.arm { position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:0; }
+    @media (max-width: 700px) { canvas.arm { display:none; } }
   </style>
 </head>
 <body>
+  <canvas class="arm" aria-hidden="true"></canvas>
   <main>
     <h1>Nothing here.</h1>
     <p>That page doesn't exist — or it walked off.</p>
     <a href="/">Back to the front page</a>
   </main>
+
+  <script>
+    /* The reaching arm, alone this time: it stretches toward your cursor from the
+       right edge of an empty page and stops just short. Fitting, for a 404. */
+    (() => {
+      'use strict';
+      const cv = document.querySelector('canvas.arm');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+      const mqFine = matchMedia('(hover: hover) and (pointer: fine)');
+      const mqDark = matchMedia('(prefers-color-scheme: dark)');
+      const PI = Math.PI, TAU = 2 * PI;
+      const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
+
+      const tok = {};
+      function readTokens() {
+        const cs = getComputedStyle(document.documentElement);
+        for (const k of ['bg', 'ink-3', 'rule', 'accent']) tok[k] = cs.getPropertyValue('--' + k).trim();
+      }
+
+      let W = 0, H = 0, L = [150, 120, 80], reach = 0, baseX = 0, baseY = 0, hidden = false;
+      const lim = [[PI / 2 + 0.35, 1.5 * PI - 0.3], [-2.6, -0.2], [-1.0, 1.0]];
+      const rest = [PI + 0.55, -1.9, 0.65];
+      let q = rest.slice(), v = [0, 0, 0], g = rest.slice();
+      const OMEGA = [4.2, 5.2, 6.8], ZETA = [0.72, 0.68, 0.62], VMAX = [2.5, 3.5, 4.5];
+      let stiff = 0.45, arcA = 0, simT = 0, acc = 0;
+      const STEP = 1 / 120, HOVER = 18;
+      const reachOf = (l) => {
+        const c = Math.cos(lim[1][1]), l23 = l[1] + l[2];
+        return Math.sqrt(l[0] * l[0] + l23 * l23 + 2 * l[0] * l23 * c);
+      };
+
+      function layout() {
+        hidden = getComputedStyle(cv).display === 'none';
+        if (hidden) return;
+        W = innerWidth; H = innerHeight;
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        baseX = W - 10; baseY = H * 0.5;
+        const s = clamp(Math.min((W * 0.52) / reachOf([150, 120, 80]), H / 620), 0.55, 1.5);
+        L = [150 * s, 120 * s, 80 * s];
+        reach = reachOf(L);
+      }
+
+      function fk(a) {
+        const a1 = a[0], a2 = a1 + a[1], a3 = a2 + a[2];
+        const x1 = baseX + L[0] * Math.cos(a1), y1 = baseY + L[0] * Math.sin(a1);
+        const x2 = x1 + L[1] * Math.cos(a2), y2 = y1 + L[1] * Math.sin(a2);
+        const x3 = x2 + L[2] * Math.cos(a3), y3 = y2 + L[2] * Math.sin(a3);
+        return { x: [baseX, x1, x2, x3], y: [baseY, y1, y2, y3], a3 };
+      }
+
+      function solveIK(tx, ty, px, py) {
+        const lam2 = 576;
+        for (let it = 0; it < 3; it++) {
+          const f = fk(g);
+          let ex = tx - f.x[3], ey = ty - f.y[3];
+          const d = Math.hypot(ex, ey);
+          if (d < 0.02) break;
+          if (d > 40) { ex *= 40 / d; ey *= 40 / d; }
+          const jx = [], jy = [];
+          for (let i = 0; i < 3; i++) { jx[i] = -(f.y[3] - f.y[i]); jy[i] = f.x[3] - f.x[i]; }
+          let a00 = lam2, a01 = 0, a11 = lam2;
+          for (let i = 0; i < 3; i++) { a00 += jx[i] * jx[i]; a01 += jx[i] * jy[i]; a11 += jy[i] * jy[i]; }
+          const det = a00 * a11 - a01 * a01;
+          const i00 = a11 / det, i01 = -a01 / det, i11 = a00 / det;
+          const ux = i00 * ex + i01 * ey, uy = i01 * ex + i11 * ey;
+          const want = Math.atan2(py - f.y[2], px - f.x[2]);
+          let dw = want - f.a3; dw = Math.atan2(Math.sin(dw), Math.cos(dw));
+          const b = [0.06 * (rest[0] - g[0]), 0.06 * (rest[1] - g[1]), 0.2 * dw];
+          for (let i = 0; i < 3; i++) {
+            const p0 = jx[i] * i00 + jy[i] * i01, p1 = jx[i] * i01 + jy[i] * i11;
+            let dq = jx[i] * ux + jy[i] * uy + b[i];
+            for (let j = 0; j < 3; j++) dq -= (p0 * jx[j] + p1 * jy[j]) * b[j];
+            g[i] = clamp(g[i] + dq, lim[i][0], lim[i][1]);
+          }
+        }
+      }
+
+      function sway(t) {
+        const s1 = TAU * t / 6, s2 = TAU * t / 14.3;
+        g[0] = rest[0] + 0.030 * Math.sin(s1) + 0.020 * Math.sin(s2 + 0.4);
+        g[1] = rest[1] + 0.055 * Math.sin(s1 + 0.9) + 0.035 * Math.sin(s2 + 1.7);
+        g[2] = rest[2] + 0.080 * Math.sin(s1 + 1.8) + 0.050 * Math.sin(s2 + 2.9);
+      }
+
+      let px = 0, py = 0, lastMove = -1e9, away = true;
+      let running = false, raf = 0, last = 0;
+
+      function frame(now) {
+        raf = running ? requestAnimationFrame(frame) : 0;
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        const idle = away || !mqFine.matches || now - lastMove > 5000;
+        let outside = false;
+        if (idle) sway(simT);
+        else {
+          const dx = px - baseX, dy = py - baseY, d = Math.hypot(dx, dy) || 1;
+          outside = d > reach + HOVER;
+          const r = outside ? reach : Math.max(d - HOVER, 30);
+          solveIK(baseX + dx / d * r, baseY + dy / d * r, px, py);
+        }
+        acc += dt;
+        const target = idle ? 0.45 : 1, k = 1 - Math.exp(-STEP / (idle ? 1.0 : 0.35));
+        const kArc = 1 - Math.exp(-STEP / 0.13);
+        for (let n = 0; acc >= STEP && n < 8; n++) {
+          stiff += (target - stiff) * k;
+          arcA += ((outside ? 1 : 0) - arcA) * kArc;
+          for (let i = 0; i < 3; i++) {
+            const w = OMEGA[i] * stiff;
+            const a = w * w * (g[i] - q[i]) - 2 * ZETA[i] * w * v[i];
+            v[i] = clamp(v[i] + a * STEP, -VMAX[i], VMAX[i]);
+            q[i] += v[i] * STEP;
+          }
+          if (q[1] > -0.02) q[1] = -0.02;
+          simT += STEP; acc -= STEP;
+        }
+        draw();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.lineWidth = 1; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        if (arcA > 0.002) {
+          const hi = Math.min(lim[0][1], 1.5 * PI - Math.acos(clamp((baseY - 24) / reach, -1, 1)));
+          const lo = Math.max(lim[0][0], PI - Math.asin(clamp((H - 24 - baseY) / reach, -1, 1)));
+          ctx.strokeStyle = tok.rule; ctx.globalAlpha = 0.75 * arcA; ctx.setLineDash([3, 5]);
+          if (hi > lo) { ctx.beginPath(); ctx.arc(baseX, baseY, reach, lo, hi); ctx.stroke(); }
+          ctx.setLineDash([]);
+        }
+        const gx = Math.round(baseX + 4) + 0.5, gy = Math.round(baseY) + 0.5;
+        ctx.strokeStyle = tok['ink-3']; ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.moveTo(gx, gy - 14); ctx.lineTo(gx, gy + 14);
+        for (let k = -1; k <= 1; k++) { ctx.moveTo(gx, gy + 8 * k - 3); ctx.lineTo(gx + 5, gy + 8 * k + 2); }
+        ctx.stroke();
+        const f = fk(q);
+        ctx.beginPath(); ctx.moveTo(f.x[0], f.y[0]);
+        for (let i = 1; i < 4; i++) ctx.lineTo(f.x[i], f.y[i]);
+        ctx.stroke();
+        ctx.fillStyle = tok.bg;
+        for (const [i, r] of [[0, 3.5], [1, 2.8], [2, 2.8]]) {
+          ctx.beginPath(); ctx.arc(f.x[i], f.y[i], r, 0, TAU); ctx.fill(); ctx.stroke();
+        }
+        const ux = Math.cos(f.a3), uy = Math.sin(f.a3), nx = -uy, ny = ux;
+        const tx = f.x[3], ty = f.y[3];
+        ctx.strokeStyle = tok.accent; ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.moveTo(tx - 4 * nx, ty - 4 * ny); ctx.lineTo(tx + 4 * nx, ty + 4 * ny);
+        ctx.moveTo(tx - 4 * nx, ty - 4 * ny); ctx.lineTo(tx - 5.2 * nx + 9 * ux, ty - 5.2 * ny + 9 * uy);
+        ctx.moveTo(tx + 4 * nx, ty + 4 * ny); ctx.lineTo(tx + 5.2 * nx + 9 * ux, ty + 5.2 * ny + 9 * uy);
+        ctx.stroke();
+      }
+
+      function sync() {
+        const should = !hidden && document.visibilityState === 'visible' && !mqReduce.matches;
+        if (should && !running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
+        else if (!should && running) { running = false; cancelAnimationFrame(raf); raf = 0; }
+      }
+
+      readTokens(); layout();
+      q = rest.slice(); g = rest.slice(); sway(0); q = g.slice();
+      if (!hidden) draw();
+
+      let rt = 0;
+      addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (!hidden) draw(); sync(); }, 150); });
+      mqDark.addEventListener('change', () => { readTokens(); if (!hidden) draw(); });
+      if (mqReduce.matches) return;   // one static frame
+      addEventListener('pointermove', (e) => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        px = e.clientX; py = e.clientY; lastMove = performance.now(); away = false;
+      }, { passive: true });
+      document.addEventListener('pointerleave', () => { away = true; });
+      document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) away = true; });
+      document.addEventListener('visibilitychange', sync);
+      sync();
+    })();
+  </script>
 </body>
 </html>
