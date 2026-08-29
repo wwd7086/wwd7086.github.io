@@ -68,6 +68,19 @@
       transition: width 450ms cubic-bezier(.4, 0, .2, 1);
     }
     .swap:hover { border-bottom-color: var(--accent); }
+    .swap.carried {
+      position: fixed;
+      z-index: 4;               /* under the canvas, so the gripper draws over the word */
+      pointer-events: none;
+      transition: none;
+      border-bottom-color: var(--accent);
+    }
+    .swap-gap {
+      display: inline-block;
+      white-space: nowrap;
+      border-bottom: 1px dashed var(--rule);   /* the empty slot, waiting */
+      transition: width 360ms cubic-bezier(.4, 0, .2, 1);
+    }
     @media (prefers-reduced-motion: reduce) { .swap { transition: none; } }
 
     /* Phone vignettes: the scenes as small in-flow bands under their sections */
@@ -104,7 +117,7 @@
     <div class="hero">
       <h1>Wenda Wang</h1>
       <p class="lede">
-        Builder and engineer, working where vision,
+        Builder and engineer, working where vision,<br>
         <span class="swap" id="swapterm" title="the arm will get to this">robotics</span>
         and large models meet.
       </p>

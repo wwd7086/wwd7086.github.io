@@ -34,9 +34,9 @@
   function domWidth(text) {
     if (!swapEl) return 0;
     if (!meas) {
-      meas = swapEl.cloneNode(false);
+      meas = document.createElement('span');
+      meas.className = 'swap';
       meas.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;width:auto;border:0;';
-      meas.removeAttribute('id');
       swapEl.parentNode.appendChild(meas);
     }
     meas.textContent = text;
@@ -71,7 +71,7 @@
   const arm = (() => {
     let box = { x0: 0, w: 0, h: 0, band: false };
     let L = [150, 120, 80], L0 = [150, 120, 80], reach = 0, baseX = 0, baseY = 0;
-    let stretch = 1, stretchTo = 1;          // link multiplier for the long reach into the text
+    let stretch = 1, stretchTo = 1;
     const lim = [[PI / 2 + 0.35, 1.5 * PI - 0.3], [-2.6, -0.2], [-1.0, 1.0]];
     const rest = [PI + 0.55, -1.9, 0.65];
     let q = rest.slice(), v = [0, 0, 0], g = rest.slice();
@@ -83,29 +83,81 @@
       return Math.sqrt(l[0] * l[0] + l23 * l23 + 2 * l[0] * l23 * c);
     };
 
-    // ---- the pick-and-place task (desktop only)
-    // phases: reach -> grab -> out -> in -> place; null when the arm is off duty
-    let task = null;
-    let carry = null;                        // the word hanging from the gripper
-    let phi = 0, phiV = 0, tipPX = 0;        // pendulum state + last tip x
-    let wordFont = '300 23px Newsreader, Georgia, serif';
-    function gripPoint() {
+    /* ---- the pick-and-place task (desktop only).
+       The word is a DOM element for the whole ride: at the grab it is promoted to
+       position:fixed and then follows the fk tip every frame, so the gripper and
+       the word can never separate; a spacer keeps (and later re-sizes) its gap in
+       the sentence. The tip itself runs a time-based min-jerk waypoint path, and
+       the joints are driven directly by IK during the task — the smoothness comes
+       from the path, the physicality from the swing. */
+    let task = null;          // { phase, t, T, from:{x,y}, to:{x,y} }
+    let carrying = false, carryW = 0, closeAmt = 0;
+    let spacer = null, seatDx = 0, seatDy = 0;
+    let phi = 0, phiV = 0, tipPX = 0;
+    const mj = (t) => { t = clamp(t, 0, 1); return t * t * t * (10 + t * (-15 + 6 * t)); };
+
+    function wordGrip() {         // live grip point: top-centre of the word in the flow
       const r = swapEl.getBoundingClientRect();
-      return { x: r.left + r.width / 2, y: r.top - 7, below: r.height };
+      return { x: r.left + r.width / 2, y: r.top, r };
     }
+    function seatGrip() {         // where the word must be set down, from the spacer
+      const r = spacer.getBoundingClientRect();
+      return { x: r.left + seatDx + carryW / 2, y: r.top + seatDy };
+    }
+    function tipNow() { const f = fk(q); return { x: f.x[3], y: f.y[3] }; }
+    function goto(phase, T, from, to) { task = { phase, t: 0, T, from, to }; }
+    function target() {
+      const s = mj(task.t / task.T);
+      return { x: task.from.x + (task.to.x - task.from.x) * s,
+               y: task.from.y + (task.to.y - task.from.y) * s };
+    }
+
     function startTask() {
       if (task || !swapEl || box.band || mqReduce.matches) return false;
-      const cs = getComputedStyle(swapEl);
-      wordFont = `${cs.fontStyle === 'italic' ? 'italic ' : ''}${cs.fontWeight} ${cs.fontSize} Newsreader, Georgia, serif`;
-      task = { phase: 'reach', t: 0 };
+      const gp = wordGrip();
+      goto('approach', 0.7, tipNow(), { x: gp.x, y: gp.y - 16 });
+      closeAmt = 0; phi = 0; phiV = 0;
       return true;
     }
     function abortTask() {
       if (!task) return;
-      if (swapEl) { swapEl.style.visibility = 'visible'; settleTermWidth(); }
-      task = null; carry = null; stretchTo = 1;
+      if (carrying) {
+        swapEl.classList.remove('carried');
+        swapEl.style.left = swapEl.style.top = swapEl.style.transform = swapEl.style.transformOrigin = '';
+        swapEl.style.opacity = ''; swapEl.style.transition = '';
+      }
+      if (spacer) { spacer.remove(); spacer = null; }
+      carrying = false; closeAmt = 0; task = null; stretchTo = 1; v = [0, 0, 0];
     }
     const busy = () => !!task;
+
+    function attachWord() {
+      const r = swapEl.getBoundingClientRect();
+      spacer = document.createElement('span');
+      spacer.className = 'swap-gap';
+      spacer.style.width = r.width + 'px';
+      swapEl.parentNode.insertBefore(spacer, swapEl);
+      const sr = spacer.getBoundingClientRect();
+      seatDx = r.left - sr.left; seatDy = r.top - sr.top;   // baseline vs box offsets, measured not assumed
+      carryW = r.width;
+      swapEl.classList.add('carried');
+      swapEl.style.left = r.left + 'px';
+      swapEl.style.top = r.top + 'px';
+      swapEl.style.transformOrigin = '50% 0';
+      carrying = true;
+    }
+    function moveWord(tip) {
+      swapEl.style.left = (tip.x - carryW / 2) + 'px';
+      swapEl.style.top = tip.y + 'px';
+      swapEl.style.transform = 'rotate(' + phi + 'rad)';
+    }
+    function releaseWord() {
+      swapEl.classList.remove('carried');
+      swapEl.style.left = swapEl.style.top = swapEl.style.transform = swapEl.style.transformOrigin = '';
+      swapEl.style.opacity = ''; swapEl.style.transition = '';
+      if (spacer) { spacer.remove(); spacer = null; }
+      carrying = false;
+    }
 
     function layout(b) {
       box = b;
@@ -125,9 +177,9 @@
       const x3 = x2 + L[2] * Math.cos(a3), y3 = y2 + L[2] * Math.sin(a3);
       return { x: [baseX, x1, x2, x3], y: [baseY, y1, y2, y3], a3 };
     }
-    function solveIK(tx, ty, px, py) {
+    function solveIK(tx, ty, px, py, iters) {
       const lam2 = 576;
-      for (let it = 0; it < 3; it++) {
+      for (let it = 0; it < (iters || 3); it++) {
         const f = fk(g);
         let ex = tx - f.x[3], ey = ty - f.y[3];
         const d = Math.hypot(ex, ey);
@@ -157,61 +209,82 @@
       g[1] = rest[1] + 0.055 * Math.sin(s1 + 0.9) + 0.035 * Math.sin(s2 + 1.7);
       g[2] = rest[2] + 0.080 * Math.sin(s1 + 1.8) + 0.050 * Math.sin(s2 + 2.9);
     }
+
+    function stepTask(h) {
+      task.t += h;
+      const gp = carrying ? null : (spacer ? null : wordGrip());
+      // keep the reach targets live: word (before grab) and seat (after) can move with scroll
+      if (task.phase === 'approach') { const g2 = wordGrip(); task.to = { x: g2.x, y: g2.y - 16 }; }
+      if (task.phase === 'descend') { const g2 = wordGrip(); task.to = { x: g2.x, y: g2.y }; }
+      if (task.phase === 'in') { const s2 = seatGrip(); task.to = { x: s2.x, y: s2.y - 36 }; }
+      if (task.phase === 'place') { const s2 = seatGrip(); task.to = { x: s2.x, y: s2.y }; }
+      const tg = target();
+      if (window.__armlog) { const f0 = fk(q); window.__armlog.push({ph: task.phase, t: +task.t.toFixed(2), tx: Math.round(tg.x), ty: Math.round(tg.y), ax: Math.round(f0.x[3]), ay: Math.round(f0.y[3]), st: +stretch.toFixed(2), stT: +stretchTo.toFixed(2)}); }
+      // stretch so the whole SEGMENT is inside the workspace: size for the endpoint
+      // and for the live target, so the arm is never caught short mid-traverse
+      const needOf = (p) => Math.hypot(p.x - baseX, p.y - baseY) + 30;
+      const need = Math.max(needOf(tg), needOf(task.to));
+      stretchTo = clamp(need / reachOf(L0), 1, 3.6);
+      // fingers
+      if (task.phase === 'descend') closeAmt = clamp(task.t / (task.T * 0.85), 0, 1);
+      if (task.phase === 'release') closeAmt = 1 - clamp(task.t / task.T, 0, 1);
+      // drive the joints directly at the moving target, hand pointing down at it
+      solveIK(tg.x, tg.y, tg.x, tg.y + 60, 6);
+      q = g.slice(); v = [0, 0, 0];
+      const tip = tipNow();
+      // phase transitions: time must have elapsed AND the tip must actually be there
+      const errNow = Math.hypot(tip.x - task.to.x, tip.y - task.to.y);
+      const settled = errNow < 4;
+      const overdue = task.t > task.T + 0.6;
+      if (task.t >= task.T && (settled || overdue)) {
+        if (overdue && !settled && (task.phase === 'descend' || task.phase === 'place')) { abortTask(); return; }
+        switch (task.phase) {
+          case 'approach': { const g2 = wordGrip(); goto('descend', 0.3, tip, { x: g2.x, y: g2.y }); break; }
+          case 'descend': { const g2 = wordGrip(); attachWord(); goto('lift', 0.34, tip, { x: g2.x, y: g2.y - 36 }); break; }
+          case 'lift': goto('hold', 0.15, tip, tip); break;
+          case 'hold': {
+            // carry home: a gentle slope to a depot by the margin, near the arm's
+            // resting height — always a reachable, easy fold-home pose
+            const exit = { x: baseX - 58, y: baseY - 44 };
+            goto('out', 0.85, tip, exit); break;
+          }
+          case 'out': {
+            // at the depot: the word dissolves into the next term in plain sight
+            swapEl.style.transition = 'opacity 170ms ease';
+            swapEl.style.opacity = '0';
+            setTimeout(() => {
+              if (!carrying) return;
+              swapEl.textContent = nextTerm(); advanceTerm();
+              carryW = swapEl.offsetWidth;
+              if (spacer) spacer.style.width = domWidth(swapEl.textContent) + 'px';
+              swapEl.style.opacity = '1';
+            }, 220);
+            goto('swapWait', 0.62, tip, tip); break;
+          }
+          case 'swapWait': { const s2 = seatGrip(); goto('in', 0.85, tip, { x: s2.x, y: s2.y - 36 }); break; }
+          case 'in': { const s2 = seatGrip(); goto('place', 0.36, tip, { x: s2.x, y: s2.y }); break; }
+          case 'place': { releaseWord(); goto('release', 0.22, tip, { x: tip.x, y: tip.y - 12 }); break; }
+          case 'release': task = null; stretchTo = 1; break;
+        }
+      }
+      // the word swings a little against the tip's horizontal motion; it is damped
+      // to vertical while being placed so it seats exactly
+      const vx = (tip.x - tipPX) / Math.max(h, 1e-3); tipPX = tip.x;
+      if (task && (task.phase === 'place' || task.phase === 'descend')) {
+        phi *= Math.exp(-h / 0.07); phiV = 0;
+      } else {
+        const phiT = clamp(-vx * 0.00045, -0.28, 0.28);
+        const aphi = 30 * (phiT - phi) - 10 * phiV;
+        phiV += aphi * h; phi += phiV * h;
+      }
+      if (carrying) moveWord(tip);
+    }
+
     function step(h, env) {
       simT += h;
       let outside = false;
       if (task && swapEl) {
-        task.t += h;
-        const gp = gripPoint();
-        const f0 = fk(q);
-        const tip = { x: f0.x[3], y: f0.y[3] };
-        // stretch the links so the far grip point is comfortably inside the workspace
-        const need = Math.hypot(gp.x - baseX, gp.y - baseY) + 26;
-        const baseReach = reachOf(L0);
-        const wantStretch = clamp(need / baseReach, 1, 2.6);
-        if (task.phase === 'reach' || task.phase === 'in') stretchTo = wantStretch;
-        if (task.phase === 'reach') {
-          solveIK(gp.x, gp.y, gp.x, gp.y + 40);
-          if (Math.hypot(tip.x - gp.x, tip.y - gp.y) < 5 && task.t > 0.35) {
-            task.phase = 'grab'; task.t = 0;
-            swapEl.style.visibility = 'hidden';
-            carry = swapEl.textContent;
-            phi = 0; phiV = 0;
-          }
-        } else if (task.phase === 'grab') {
-          solveIK(gp.x, gp.y, gp.x, gp.y + 40);
-          if (task.t > 0.22) {
-            task.phase = 'out'; task.t = 0;
-            setTermAnimated(nextTerm());     // the sentence quietly makes room while the arm is away
-          }
-        } else if (task.phase === 'out') {
-          stretchTo = 1.15;
-          const ox = box.x0 + box.w + 50, oy = baseY - 10;
-          solveIK(ox, oy, ox, oy);
-          if (tip.x > box.x0 + box.w - 4 || task.t > 1.6) {
-            carry = nextTerm(); advanceTerm();
-            task.phase = 'in'; task.t = 0;
-            phi = 0.35; phiV = 0;            // the new word arrives with a little swing
-          }
-        } else if (task.phase === 'in') {
-          const gp2 = gripPoint();
-          solveIK(gp2.x, gp2.y, gp2.x, gp2.y + 40);
-          if (Math.hypot(tip.x - gp2.x, tip.y - gp2.y) < 5 && task.t > 0.35) {
-            task.phase = 'place'; task.t = 0;
-          }
-        } else if (task.phase === 'place') {
-          const gp2 = gripPoint();
-          solveIK(gp2.x, gp2.y, gp2.x, gp2.y + 40);
-          if (task.t > 0.2) {
-            swapEl.style.visibility = 'visible'; settleTermWidth();
-            carry = null; task = null; stretchTo = 1;
-          }
-        }
-        // pendulum: the word swings against the tip's horizontal motion
-        const vx = (tip.x - tipPX) / Math.max(h, 1e-3); tipPX = tip.x;
-        const phiT = clamp(-vx * 0.0012, -0.6, 0.6);
-        const aphi = 28 * (phiT - phi) - 9 * phiV;
-        phiV += aphi * h; phi += phiV * h;
+        stepTask(h);
       } else if (env.idle) {
         sway(simT);
       } else {
@@ -223,17 +296,20 @@
       }
       const active = task ? 1 : (env.idle ? 0.45 : 1);
       stiff += (active - stiff) * (1 - Math.exp(-h / (env.idle && !task ? 1.0 : 0.35)));
-      stretch += (stretchTo - stretch) * (1 - Math.exp(-h / 0.28));
+      stretch += (stretchTo - stretch) * (1 - Math.exp(-h / (task ? 0.11 : 0.24)));
       L = L0.map((x) => x * stretch);
       reach = reachOf(L);
       arcA += (((outside && !task) ? 1 : 0) - arcA) * (1 - Math.exp(-h / 0.13));
-      for (let i = 0; i < 3; i++) {
-        const w = OMEGA[i] * stiff;
-        const a = w * w * (g[i] - q[i]) - 2 * ZETA[i] * w * v[i];
-        v[i] = clamp(v[i] + a * h, -VMAX[i], VMAX[i]);
-        q[i] += v[i] * h;
+      if (!task) {
+        for (let i = 0; i < 3; i++) {
+          const w = OMEGA[i] * stiff;
+          const a = w * w * (g[i] - q[i]) - 2 * ZETA[i] * w * v[i];
+          v[i] = clamp(v[i] + a * h, -VMAX[i], VMAX[i]);
+          q[i] += v[i] * h;
+        }
+        if (q[1] > -0.02) q[1] = -0.02;
+        if (carrying) moveWord(tipNow());   // belt and braces: never leave the word behind
       }
-      if (q[1] > -0.02) q[1] = -0.02;
     }
     function draw(A, yOff) {
       const ctx = G.ctx;
@@ -259,28 +335,16 @@
       for (const [i, r] of [[0, 3.5], [1, 2.8], [2, 2.8]]) {
         ctx.beginPath(); ctx.arc(f.x[i], f.y[i], r, 0, TAU); ctx.fill(); ctx.stroke();
       }
-      // gripper: open normally, closed around the word while it works
-      const holding = carry !== null || (task && task.phase === 'grab');
+      // gripper: fingers ease closed over the word's top edge while it is held
       const ux = Math.cos(f.a3), uy = Math.sin(f.a3), nx = -uy, ny = ux;
       const tx = f.x[3], ty = f.y[3];
-      const spread = holding ? 2.4 : 4, tipIn = holding ? 2.6 : 5.2;
+      const spread = 4 - 1.7 * closeAmt, tipIn = 5.2 - 2.7 * closeAmt;
       ctx.strokeStyle = tok.accent; ctx.globalAlpha = A;
       ctx.beginPath();
       ctx.moveTo(tx - spread * nx, ty - spread * ny); ctx.lineTo(tx + spread * nx, ty + spread * ny);
       ctx.moveTo(tx - spread * nx, ty - spread * ny); ctx.lineTo(tx - tipIn * nx + 9 * ux, ty - tipIn * ny + 9 * uy);
       ctx.moveTo(tx + spread * nx, ty + spread * ny); ctx.lineTo(tx + tipIn * nx + 9 * ux, ty + tipIn * ny + 9 * uy);
       ctx.stroke();
-      // the word, hanging from the gripper with its little swing
-      if (carry) {
-        ctx.save();
-        ctx.translate(tx + 9 * ux, ty + 9 * uy);
-        ctx.rotate(phi);
-        ctx.font = wordFont;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-        ctx.fillStyle = tok['ink-2']; ctx.globalAlpha = A;
-        ctx.fillText(carry, 0, 2);
-        ctx.restore();
-      }
       ctx.restore();
     }
     return { layout, step, draw, startTask, abortTask, busy };
@@ -756,6 +820,8 @@
   // and each checks mqWide before running.
   startRig();
   startBands();
+  // small dev/test hook (harmless in production)
+  window.__marginalia = { swap: () => arm.startTask(), busy: () => arm.busy() };
   mqWide.addEventListener('change', () => {
     // re-run layouts on the side that just became active
     dispatchEvent(new Event('resize'));
