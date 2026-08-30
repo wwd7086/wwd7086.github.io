@@ -352,10 +352,22 @@ footer {
   html { font-size: 16px; }
   .hero { padding: 4.5rem 0 2.75rem; }
   .article-head { padding: 3.5rem 0 2rem; }
-  /* the name and the nav each get their own line, with room to breathe */
-  .top { flex-wrap: wrap; row-gap: 0.85rem; padding-top: 0.9rem; border-radius: 20px; top: 6px; }
-  .top nav { width: 100%; gap: 1.4rem; }
-  .top nav a { padding: 0.1rem 0; }
+  /* one-line floating pill, inset from the screen edges; text stays on the
+     page column (10px margin + reduced padding = the wrap's 1.5rem) */
+  .top {
+    flex-wrap: nowrap;
+    align-items: center;
+    width: auto;             /* .wrap's 100% would fight the margins */
+    margin: 0 10px;
+    top: 8px;
+    padding: 0.7rem calc(1.5rem - 10px);
+    font-size: 0.75rem;
+    gap: 0.75rem;
+  }
+  .top .mark { white-space: nowrap; flex-shrink: 0; }
+  .mark .zh { font-size: 0.8rem; margin-left: 0.3em; letter-spacing: 0.05em; }
+  .top nav { gap: 0.85rem; flex-shrink: 0; }
+  .top nav a { padding: 0.3rem 0; }
   .entry, .post-list li { grid-template-columns: 1fr; row-gap: 0.1rem; }
   .entry > .who, .entry > .role, .entry > .desc, .entry > .links { grid-column: 1; }
   .when { padding-top: 0; margin-bottom: 0.3rem; }
@@ -363,6 +375,11 @@ footer {
   .contact .k { padding-top: 0.6rem; }
   .contact li:first-child .k { padding-top: 0; }
   .label .more { float: none; display: block; margin-top: 0.4rem; }
+}
+
+@media (max-width: 374px) {
+  /* the very narrowest screens: the pill keeps its one line */
+  .mark .zh { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
