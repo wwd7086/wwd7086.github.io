@@ -15,6 +15,9 @@
   const PI = Math.PI, TAU = 2 * PI;
   const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
   const FOCUS = 0.42;
+  // The "reading line": a fraction of the viewport, but clamped so very tall
+  // windows keep it near the top of the view rather than deep into the page.
+  const focusPx = (h) => Math.min(h * FOCUS, 520);
 
   const tok = {};
   function readTokens() {
@@ -162,7 +165,7 @@
     function layout(b) {
       box = b;
       baseX = b.x0 + b.w - 9;
-      baseY = b.h * (b.band ? 0.52 : FOCUS);
+      baseY = b.band ? b.h * 0.52 : focusPx(b.h);
       const s = b.band
         ? clamp(Math.min((b.w * 0.62) / reachOf([150, 120, 80]), b.h / 300), 0.42, 0.85)
         : clamp(Math.min((b.w - 14) / reachOf([150, 120, 80]), b.h / 720), 0.45, 1);
@@ -366,7 +369,7 @@
       if (b.band) { fh = Math.min(b.h - 26, 200); fw = fh / 1.32; }
       else { fw = Math.min(b.w - 44, 200); fh = fw * 1.32; }
       fx = b.x0 + (b.w - fw) / 2;
-      fy = (b.band ? b.h / 2 : b.h * FOCUS) - fh / 2;
+      fy = (b.band ? b.h / 2 : focusPx(b.h)) - fh / 2;
       cell = fw / (CO + 1);
     }
     const px = (c) => fx + cell * (c + 1);
@@ -457,7 +460,7 @@
       const availH = b.band ? b.h - 30 : Math.min(b.h * 0.42, 330);
       S = Math.min(availW / (bx1 - bx0), availH / (by1 - by0));
       ox = b.x0 + b.w / 2 - S * (bx0 + bx1) / 2;
-      oy = (b.band ? b.h / 2 : b.h * FOCUS) + S * (by0 + by1) / 2;
+      oy = (b.band ? b.h / 2 : focusPx(b.h)) + S * (by0 + by1) / 2;
     }
     function step(h, env) {
       const now = env.now;
@@ -525,8 +528,8 @@
       rx = b.x0 + (b.w - rw) / 2;
       if (b.band) { top = 16; bot = b.h - 16; }
       else {
-        top = Math.max(24, b.h * FOCUS - b.h * 0.30);
-        bot = Math.min(b.h - 24, b.h * FOCUS + b.h * 0.30);
+        top = Math.max(24, focusPx(b.h) - Math.min(b.h * 0.30, 270));
+        bot = Math.min(b.h - 24, focusPx(b.h) + Math.min(b.h * 0.30, 270));
       }
       egoY = bot - 34; tgtY = top + (bot - top) * 0.30;
     }
@@ -652,7 +655,7 @@
       regions = [0, yOf('#now') - 90, yOf('#noble') - 90, yOf('#apple') - 90, yOf('#writing') - 60];
     }
     function activeScene() {
-      const fy = scrollY + innerHeight * FOCUS;
+      const fy = scrollY + focusPx(innerHeight);
       if (fy >= regions[4]) return -1;
       for (let i = 3; i >= 0; i--) if (fy >= regions[i]) return i;
       return 0;
@@ -660,7 +663,7 @@
     function regionProgress(i) {
       if (i < 0) return 0.5;
       const a = regions[i], b = regions[i + 1] ?? a + innerHeight;
-      return clamp((scrollY + innerHeight * FOCUS - a) / Math.max(b - a, 1), 0, 1);
+      return clamp((scrollY + focusPx(innerHeight) - a) / Math.max(b - a, 1), 0, 1);
     }
 
     let running = false, raf = 0, last = 0, quietFrames = 0;
@@ -732,6 +735,7 @@
     addEventListener('resize', relayout);
     addEventListener('orientationchange', relayout);
     if (document.fonts) document.fonts.ready.then(relayout);
+    setInterval(sync, 2000);   // watchdog: a tab that woke without firing our events self-heals
     sync();
 
     // ---- the periodic pick-and-place, plus swap-on-click
@@ -798,6 +802,7 @@
       if (!dead) { use(); scene.draw(1, 0); }   // a resting first frame (also the reduced-motion state)
       new IntersectionObserver((es) => { onScreen = es[0].isIntersecting; sync(); }, { rootMargin: '120px 0px' }).observe(el);
       document.addEventListener('visibilitychange', sync);
+      setInterval(sync, 2500);
       let rt = 0;
       addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (!dead) { use(); if (!running) scene.draw(1, 0); } sync(); }, 160); });
       const setTouch = (e) => {
