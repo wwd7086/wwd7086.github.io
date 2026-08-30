@@ -556,7 +556,7 @@
       ctx.beginPath(); ctx.arc(qx, qy, 1.2, 0, TAU); ctx.fill();
       ctx.restore();
     }
-    return { layout, step, draw };
+    return { layout, step, draw, geom: () => ({ mid: fy + fh / 2, half: fh / 2 + 22 }) };
   })();
 
   /* ============ scene 3 — the Jansen leg ============ */
@@ -652,7 +652,7 @@
       ctx.beginPath(); ctx.arc(X(P.G[0]), Y(P.G[1]), 1.9, 0, TAU); ctx.fill();
       ctx.restore();
     }
-    return { layout, step, draw };
+    return { layout, step, draw, geom: () => ({ mid: box.band ? box.h / 2 : focusPx(box.h), half: S * (by1 - by0) / 2 + 22 }) };
   })();
 
   /* ====== scene 4 — perception & tracking ====== */
@@ -746,7 +746,7 @@
       }
       ctx.restore();
     }
-    return { layout, step, draw };
+    return { layout, step, draw, geom: () => ({ mid: (top + bot) / 2, half: (bot - top) / 2 + 10 }) };
   })();
 
   const SCENES = { attn, leg, drive };
@@ -772,7 +772,7 @@
     const col = document.querySelector('main.wrap');
     const ORDER = ['attn', 'leg', 'drive'];
     const alphas = [0, 0, 0];
-    let regions = [], hidden = false;
+    let regions = [], anchors = [], hidden = false;
     let rigCtx = null, rigW = 0, rigH = 0;
     // several canvases share the scene singletons; point G at ours before any scene call
     function use() { G.ctx = rigCtx; G.W = rigW; G.H = rigH; }
@@ -794,6 +794,7 @@
     function layoutRegions() {
       const yOf = (sel) => document.querySelector(sel).getBoundingClientRect().top + scrollY;
       regions = [yOf('#now') - 90, yOf('#noble') - 90, yOf('#apple') - 90, yOf('#writing') - 60];
+      anchors = ['#elorian', '#noble', '#apple'].map((s) => document.querySelector(s));
     }
     // The reading line: the cursor's height when there is a cursor — so very
     // tall windows that never need to scroll still move through the scenes —
@@ -812,6 +813,18 @@
       if (i < 0) return 0.5;
       const a = regions[i], b = regions[i + 1];
       return clamp((fy - a) / Math.max(b - a, 1), 0, 1);
+    }
+    // Each scene sits beside the text block it belongs to: offset its drawn
+    // centre to the entry's live rect, clamped so it never leaves the screen.
+    function anchorOff(i) {
+      const el = anchors[i];
+      if (!el) return 0;
+      const gm = SCENES[ORDER[i]].geom();
+      const r = el.getBoundingClientRect();
+      let a = r.top + r.height / 2;
+      const lo = gm.half + 20, hi = G.H - gm.half - 20;
+      a = lo <= hi ? clamp(a, lo, hi) : G.H / 2;
+      return a - gm.mid;
     }
 
     let running = false, raf = 0, last = 0, quietFrames = 0;
@@ -843,7 +856,7 @@
           if (alphas[i] <= 0) continue;
           const sc = SCENES[ORDER[i]];
           sc.step(dt, env);
-          const yOff = (0.5 - regionProgress(i, focusSm)) * 26 * (i === act ? 1 : alphas[i]);
+          const yOff = anchorOff(i) + (0.5 - regionProgress(i, focusSm)) * 10 * (i === act ? 1 : alphas[i]);
           sc.draw(alphas[i], yOff);
         }
         quietFrames = 0;
@@ -861,7 +874,7 @@
       use();
       G.ctx.clearRect(0, 0, G.W, G.H);
       const act = activeScene(focusNow());
-      if (act >= 0) SCENES[ORDER[act]].draw(1, 0);
+      if (act >= 0) SCENES[ORDER[act]].draw(1, anchorOff(act));
     }
 
     layoutCanvas(); layoutRegions();
