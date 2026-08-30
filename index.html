@@ -74,6 +74,7 @@
       transition: width 450ms cubic-bezier(.4, 0, .2, 1);
     }
     .swap:hover { border-bottom-color: var(--accent); }
+    .swap:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
     .swap.carried {
       position: fixed;
       z-index: 4;               /* under the canvas, so the gripper draws over the word */
@@ -88,6 +89,13 @@
       transition: width 360ms cubic-bezier(.4, 0, .2, 1);
     }
     @media (prefers-reduced-motion: reduce) { .swap { transition: none; } }
+
+    /* for the screen-reader announcement of each completed swap */
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; border: 0;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
 
     /* Phone vignettes: the scenes as small in-flow bands under their sections */
     .vignette { display: none; }
@@ -317,6 +325,6 @@
     })();
   </script>
 
-  <script src="/marginalia.js?v=9" defer></script>
+  <script src="/marginalia.js?v=10" defer></script>
 </body>
 </html>

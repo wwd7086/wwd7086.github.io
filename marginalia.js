@@ -68,13 +68,14 @@
   // Fallback swap (when the arm cannot do the job): a quiet crossfade.
   let fading = false;
   let busyRef = () => false;   // becomes the gantry's busy() once it exists
+  let onSwap = () => {};       // becomes the label/announcement refresh once wired
   function fadeSwap(slot) {
     if (!slot || fading || busyRef()) return;
     fading = true;
     slot.el.style.transition = 'opacity 260ms ease, width 450ms cubic-bezier(.4,0,.2,1)';
     slot.el.style.opacity = '0';
     setTimeout(() => {
-      setTermAnimated(slot, nextTerm(slot)); advanceTerm(slot);
+      setTermAnimated(slot, nextTerm(slot)); advanceTerm(slot); onSwap();
       slot.el.style.opacity = '1';
       setTimeout(() => { settleTermWidth(slot); fading = false; }, 470);
     }, 280);
@@ -172,6 +173,7 @@
     function makeGhost(txt) {
       const el = document.createElement('span');
       el.className = 'swap carried';
+      el.setAttribute('aria-hidden', 'true');   // a duplicate in flight, not content
       el.textContent = txt;
       el.style.left = '-9999px'; el.style.top = '0px';
       el.style.transformOrigin = '50% 0';
@@ -218,6 +220,7 @@
       p.slot.el.textContent = p.newTxt;
       advanceTerm(p.slot);
       releaseSeat();
+      onSwap();
       const rr = p.slot.el.getBoundingClientRect();
       p.stats.releaseJump = Math.hypot(rr.left - nr.left, rr.top - nr.top);
       ghostN.remove(); ghostN = null;
@@ -987,9 +990,35 @@
     setInterval(() => gantry.startPass(), 21000);
   }
   for (const s of SLOTS) s.el.addEventListener('click', () => {
-    if (mqReduce.matches) { setTermAnimated(s, nextTerm(s)); advanceTerm(s); settleTermWidth(s); return; }
+    if (mqReduce.matches) { setTermAnimated(s, nextTerm(s)); advanceTerm(s); settleTermWidth(s); onSwap(); return; }
     if (!gantry.busy() && !gantry.startPass(s)) fadeSwap(s);
   });
+
+  // ---- the slots are real controls: focusable, pressable, announced.
+  // Applied by script so a no-JS page keeps honest plain text.
+  if (SLOTS.length) {
+    const note = document.createElement('p');
+    note.className = 'visually-hidden';
+    note.setAttribute('aria-live', 'polite');
+    document.body.appendChild(note);
+    const label = (s) =>
+      s.el.setAttribute('aria-label', s.el.textContent.trim() + ' — press and the arm will swap this word');
+    for (const s of SLOTS) {
+      s.el.setAttribute('role', 'button');
+      s.el.setAttribute('tabindex', '0');
+      label(s);
+      s.el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); s.el.click(); }
+      });
+    }
+    onSwap = () => {
+      for (const s of SLOTS) label(s);
+      if (SLOTS.length === 2) {
+        note.textContent = 'The introduction now reads: working where '
+          + SLOTS[0].el.textContent.trim() + ' and ' + SLOTS[1].el.textContent.trim() + ' meet.';
+      }
+    };
+  }
 
   // ---- the floating masthead: detaches on scroll, with a little buoyancy
   const topBar = document.querySelector('.top');
