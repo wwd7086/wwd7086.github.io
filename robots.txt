@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://wwd7086.github.io/sitemap.xml
+Sitemap: https://wendawang.me/sitemap.xml

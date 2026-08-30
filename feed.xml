@@ -2,19 +2,19 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Wenda Wang — Writing</title>
   <subtitle>Essays on AI, robotics, and engineering.</subtitle>
-  <link href="https://wwd7086.github.io/feed.xml" rel="self"/>
-  <link href="https://wwd7086.github.io/blog/"/>
-  <id>https://wwd7086.github.io/blog/</id>
+  <link href="https://wendawang.me/feed.xml" rel="self"/>
+  <link href="https://wendawang.me/blog/"/>
+  <id>https://wendawang.me/blog/</id>
   <updated>2026-04-07T00:00:00-07:00</updated>
   <author>
     <name>Wenda Wang</name>
-    <uri>https://wwd7086.github.io/</uri>
+    <uri>https://wendawang.me/</uri>
   </author>
 
   <entry>
     <title>The Two Paradigms of AI</title>
-    <link href="https://wwd7086.github.io/blog/two-paradigms-of-ai/"/>
-    <id>https://wwd7086.github.io/blog/two-paradigms-of-ai/</id>
+    <link href="https://wendawang.me/blog/two-paradigms-of-ai/"/>
+    <id>https://wendawang.me/blog/two-paradigms-of-ai/</id>
     <published>2026-04-07T00:00:00-07:00</published>
     <updated>2026-04-07T00:00:00-07:00</updated>
     <summary>Language models and world models have each succeeded on their own terms. AGI will come from unifying them correctly, not from choosing between them.</summary>
@@ -22,8 +22,8 @@
 
   <entry>
     <title>The LLM is the New Compiler: Moving From “Vibe Coding” to Intent-Based Engineering</title>
-    <link href="https://wwd7086.github.io/blog/llm-is-the-new-compiler/"/>
-    <id>https://wwd7086.github.io/blog/llm-is-the-new-compiler/</id>
+    <link href="https://wendawang.me/blog/llm-is-the-new-compiler/"/>
+    <id>https://wendawang.me/blog/llm-is-the-new-compiler/</id>
     <published>2026-01-29T00:00:00-08:00</published>
     <updated>2026-01-29T00:00:00-08:00</updated>
     <summary>If the LLM is a compiler, the natural-language blueprint is the source of truth — and “vibe coding” has to grow up into intent-based engineering.</summary>

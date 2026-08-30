@@ -1,6 +1,6 @@
-# wwd7086.github.io
+# wendawang.me
 
-Personal site for Wenda Wang, served by GitHub Pages at <https://wwd7086.github.io>.
+Personal site for Wenda Wang, served by GitHub Pages at <https://wendawang.me> (custom domain set by the `CNAME` file; the old wwd7086.github.io address redirects there).
 
 Plain static HTML — no build step.
 
