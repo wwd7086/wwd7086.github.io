@@ -990,6 +990,7 @@
     setInterval(() => gantry.startPass(), 21000);
   }
   for (const s of SLOTS) s.el.addEventListener('click', () => {
+    if (window.goatcounter && goatcounter.count) goatcounter.count({ path: 'arm-summon', event: true });
     if (mqReduce.matches) { setTermAnimated(s, nextTerm(s)); advanceTerm(s); settleTermWidth(s); onSwap(); return; }
     if (!gantry.busy() && !gantry.startPass(s)) fadeSwap(s);
   });
@@ -1017,6 +1018,8 @@
         note.textContent = 'The introduction now reads: working where '
           + SLOTS[0].el.textContent.trim() + ' and ' + SLOTS[1].el.textContent.trim() + ' meet.';
       }
+      // count completed swaps, if the (cookieless) counter is present
+      if (window.goatcounter && goatcounter.count) goatcounter.count({ path: 'arm-swap', event: true });
     };
   }
 

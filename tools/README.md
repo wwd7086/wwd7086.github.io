@@ -40,3 +40,20 @@ and commit the new `og/card.png`.
   `marginalia.js`; after touching it, run a swap locally before pushing.
 - GitHub Pages builds in ~30s after push; the CDN caches HTML for ~10 minutes,
   so check changes with a query string (`/?anything`) right after deploying.
+
+## Analytics (GoatCounter)
+
+The site counts pageviews and two custom events — `arm-swap` (every completed
+word swap) and `arm-summon` (a visitor clicking/keying a term to call the arm).
+The event calls are already in `marginalia.js` and no-op until the counter
+script is present. To activate:
+
+1. Create the (free) account at https://www.goatcounter.com — pick a site code
+   (e.g. `wendawang`) and set the site URL to https://wendawang.me.
+2. Add this tag just above `</body>` on every page (home, blog index, essays),
+   with your code in place of `SITECODE`:
+
+       <script data-goatcounter="https://SITECODE.goatcounter.com/count"
+               async src="//gc.zgo.at/count.js"></script>
+
+No cookies, no consent banner needed. Expect ad-blockers to undercount.
