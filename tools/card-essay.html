@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: #f5f2ec;
+    color: #2a2724;
+    font-family: "Newsreader", Georgia, serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .inner { position: absolute; inset: 0; padding: 84px 96px; display: flex; flex-direction: column; justify-content: center; }
+  .label {
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: #8f8880;
+    text-transform: uppercase;
+    margin-bottom: 34px;
+  }
+  .title {
+    font-size: 72px;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+    line-height: 1.08;
+    font-variation-settings: "opsz" 72;
+    max-width: 1010px;
+  }
+  .byline {
+    position: absolute;
+    left: 96px; bottom: 78px;
+    font-family: "Inter", sans-serif;
+    font-size: 21px;
+    color: #8f8880;
+  }
+  .byline b { color: #2a2724; font-weight: 500; }
+  .rule { position: absolute; left: 96px; right: 96px; top: 84px; height: 1px; background: #d8d1c5; }
+  .accent { position: absolute; left: 96px; bottom: 128px; width: 64px; height: 2px; background: #7c8c79; }
+</style>
+</head>
+<body>
+  <div class="rule"></div>
+  <div class="inner">
+    <div class="label">Essay</div>
+    <div class="title">{{TITLE}}</div>
+  </div>
+  <div class="accent"></div>
+  <div class="byline"><b>Wenda Wang</b> &nbsp;·&nbsp; {{DATE}} &nbsp;·&nbsp; wwd7086.github.io</div>
+</body>
+</html>

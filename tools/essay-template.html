@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}} — Wenda Wang</title>
+  <meta name="description" content="{{DESC}}">
+  <meta name="author" content="Wenda Wang">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{DESC}}">
+  <meta property="og:url" content="https://wwd7086.github.io/blog/{{SLUG}}/">
+  <meta property="article:published_time" content="{{DATE_ISO}}">
+  <meta property="article:author" content="Wenda Wang">
+  <meta property="og:image" content="https://wwd7086.github.io/og/{{SLUG}}.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Essay: {{TITLE}}, by Wenda Wang.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@wwd7086">
+  <link rel="canonical" href="https://wwd7086.github.io/blog/{{SLUG}}/">
+  <link rel="alternate" type="application/atom+xml" title="Wenda Wang — Writing" href="/feed.xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f2ec'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,Times,serif' font-size='38' fill='%232a2724'%3EW%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <link rel="stylesheet" href="/style.css?v={{STYLE_V}}">
+</head>
+
+<body>
+  <header class="wrap top">
+    <a class="mark" href="/">Wenda Wang <span class="zh" lang="zh-Hans">王闻达</span></a>
+    <nav aria-label="Sections">
+      <a href="/#now">Now</a>
+      <a href="/#before">Before</a>
+      <a href="/blog/" aria-current="page">Writing</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <article>
+      <header class="article-head">
+        <p class="label">Essay</p>
+        <h1>{{TITLE}}</h1>
+        <p class="byline">
+          <time datetime="{{DATE_ISO}}">{{DATE_HUMAN}}</time>{{SOURCE_NOTE}}
+        </p>
+      </header>
+
+      <div class="prose">
+        <!-- Write here. The house styles you can use:
+             <p>, <strong>, <em>, <h2> section heads, <blockquote>, <code>,
+             <span class="arrow">→</span> for inline arrows,
+             <p class="coda"> for a spaced closing beat. -->
+        <p>{{DESC}}</p>
+
+        <p>…</p>
+      </div>
+
+      <nav class="article-foot" aria-label="Article navigation">
+        <a href="/blog/">← All writing</a>
+        {{PREV_LINK}}
+      </nav>
+    </article>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Wenda Wang</span>
+    <span>Sunnyvale, California · Shanghai, China</span>
+  </footer>
+  <script src="/marginalia.js?v={{JS_V}}" defer></script>
+</body>
+</html>

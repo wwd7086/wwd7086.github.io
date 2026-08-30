@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: #f5f2ec;
+    color: #2a2724;
+    font-family: "Newsreader", Georgia, serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .inner { position: absolute; inset: 0; padding: 84px 96px; display: flex; flex-direction: column; }
+  .name {
+    font-size: 118px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.0;
+    font-variation-settings: "opsz" 72;
+    margin-top: 96px;
+  }
+  .lede {
+    margin-top: 40px;
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 1.32;
+    color: #5d5851;
+    max-width: 780px;
+  }
+  .kicker {
+    position: absolute;
+    left: 96px; bottom: 78px;
+    font-family: "Inter", sans-serif;
+    font-size: 21px;
+    color: #8f8880;
+    letter-spacing: 0.01em;
+  }
+  .kicker b { color: #7c8c79; font-weight: 500; }
+  .rule { position: absolute; left: 96px; right: 96px; top: 84px; height: 1px; background: #d8d1c5; }
+  svg.arm { position: absolute; right: 0; top: 0; }
+</style>
+</head>
+<body>
+  <div class="rule"></div>
+  <!-- the site's reaching arm, resting pose, hairlines -->
+  <svg class="arm" width="430" height="630" viewBox="0 0 430 630" fill="none">
+    <!-- wall / ground symbol at the right edge -->
+    <g stroke="#8f8880" stroke-width="2">
+      <line x1="421" y1="255" x2="421" y2="311"/>
+      <line x1="421" y1="266" x2="430" y2="276"/>
+      <line x1="421" y1="282" x2="430" y2="292"/>
+      <line x1="421" y1="298" x2="430" y2="308"/>
+    </g>
+    <!-- links -->
+    <g stroke="#8f8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 421 283 L 250 218 L 122 292 L 60 342"/>
+    </g>
+    <!-- joints -->
+    <g stroke="#8f8880" stroke-width="2" fill="#f5f2ec">
+      <circle cx="421" cy="283" r="7"/>
+      <circle cx="250" cy="218" r="5.5"/>
+      <circle cx="122" cy="292" r="5.5"/>
+    </g>
+    <!-- gripper, the one accent -->
+    <g stroke="#7c8c79" stroke-width="2" stroke-linecap="round">
+      <line x1="55" y1="334" x2="66" y2="349"/>
+      <line x1="55" y1="334" x2="40" y2="349"/>
+      <line x1="66" y1="349" x2="50" y2="362"/>
+    </g>
+    <!-- faint workspace arc -->
+    <path d="M 421 60 A 226 226 0 0 0 421 512" stroke="#d8d1c5" stroke-width="1.5" stroke-dasharray="5 8"/>
+  </svg>
+
+  <div class="inner">
+    <div class="name">Wenda Wang</div>
+    <div class="lede">Builder and engineer, working where AI and&nbsp;robotics&nbsp;meet.</div>
+  </div>
+  <div class="kicker"><b>wwd7086.github.io</b> &nbsp;·&nbsp; Computer vision &nbsp;·&nbsp; Robot learning &nbsp;·&nbsp; ML infrastructure</div>
+</body>
+</html>
