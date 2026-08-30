@@ -115,10 +115,12 @@
                y: task.from.y + (task.to.y - task.from.y) * s };
     }
 
+    const travelT = (a, b) => clamp(0.4 + Math.hypot(b.x - a.x, b.y - a.y) / 1500, 0.55, 1.15);
     function startTask() {
       if (task || !swapEl || box.band || mqReduce.matches) return false;
       const gp = wordGrip();
-      goto('approach', 0.7, tipNow(), { x: gp.x, y: gp.y - 16 });
+      const from = tipNow(), to = { x: gp.x, y: gp.y - 16 };
+      goto('approach', travelT(from, to), from, to);
       closeAmt = 0; phi = 0; phiV = 0;
       return true;
     }
@@ -227,7 +229,8 @@
       // and for the live target, so the arm is never caught short mid-traverse
       const needOf = (p) => Math.hypot(p.x - baseX, p.y - baseY) + 30;
       const need = Math.max(needOf(tg), needOf(task.to));
-      stretchTo = clamp(need / reachOf(L0), 1, 3.6);
+      const maxStretch = (Math.hypot(innerWidth, innerHeight) * 1.1 + 60) / reachOf(L0);
+      stretchTo = clamp(need / reachOf(L0), 1, maxStretch);
       // fingers
       if (task.phase === 'descend') closeAmt = clamp(task.t / (task.T * 0.85), 0, 1);
       if (task.phase === 'release') closeAmt = 1 - clamp(task.t / task.T, 0, 1);
@@ -249,7 +252,7 @@
             // carry home: a gentle slope to a depot by the margin, near the arm's
             // resting height — always a reachable, easy fold-home pose
             const exit = { x: baseX - 58, y: baseY - 44 };
-            goto('out', 0.85, tip, exit); break;
+            goto('out', travelT(tip, exit), tip, exit); break;
           }
           case 'out': {
             // at the depot: the word dissolves into the next term in plain sight
@@ -264,7 +267,7 @@
             }, 220);
             goto('swapWait', 0.62, tip, tip); break;
           }
-          case 'swapWait': { const s2 = seatGrip(); goto('in', 0.85, tip, { x: s2.x, y: s2.y - 36 }); break; }
+          case 'swapWait': { const s2 = seatGrip(); const to2 = { x: s2.x, y: s2.y - 36 }; goto('in', travelT(tip, to2), tip, to2); break; }
           case 'in': { const s2 = seatGrip(); goto('place', 0.36, tip, { x: s2.x, y: s2.y }); break; }
           case 'place': { releaseWord(); goto('release', 0.22, tip, { x: tip.x, y: tip.y - 12 }); break; }
           case 'release': task = null; stretchTo = 1; break;
