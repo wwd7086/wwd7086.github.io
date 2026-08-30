@@ -986,7 +986,7 @@
   // on geometry and visibility, so a skipped beat is silent and safe
   const AUTO = !/[?&]noauto\b/.test(location.search);   // tests pin their own timing
   if (SLOTS.length && AUTO) {
-    setTimeout(() => gantry.startPass(), 6000);
+    setTimeout(() => gantry.startPass(), 3000);
     setInterval(() => gantry.startPass(), 21000);
   }
   for (const s of SLOTS) s.el.addEventListener('click', () => {
