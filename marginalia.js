@@ -32,45 +32,51 @@
   // The active drawing surface. Runners point G at their canvas before calling scenes.
   const G = { ctx: null, W: 0, H: 0 };
 
-  /* ================= the rotating term in the lede ================= */
-  const TERMS = ['robotics', 'perception', 'world models', 'embodied AI', 'interactive models', 'sim-to-real RL'];
-  const swapEl = document.getElementById('swapterm');
-  let termIdx = 0;
+  /* ============ the two rotating terms in the lede ============
+     "working where A and B meet" — one side is the intelligence, the other
+     is where it lands. The gantry swaps one side per visit, alternating,
+     so every combination stays true. */
+  const SLOTS = [
+    { el: document.getElementById('swapA'),
+      terms: ['AI', 'machine learning', 'LLMs', 'foundation models', 'world models'], idx: 0 },
+    { el: document.getElementById('swapB'),
+      terms: ['robotics', 'the physical world', 'vision', 'audio'], idx: 0 },
+  ].filter((s) => s.el);
+  let slotTurn = 0;
+  const nextSlot = () => SLOTS[slotTurn % SLOTS.length];
   let meas = null;
-  function domWidth(text) {
-    if (!swapEl) return 0;
+  function domWidth(slot, text) {
     if (!meas) {
       meas = document.createElement('span');
       meas.className = 'swap';
       meas.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;width:auto;border:0;';
-      swapEl.parentNode.appendChild(meas);
+      slot.el.parentNode.appendChild(meas);
     }
     meas.textContent = text;
     return meas.getBoundingClientRect().width;
   }
-  // Animate the sentence gap from the old width to the new one.
-  function setTermAnimated(next) {
-    if (!swapEl) return;
-    swapEl.style.width = swapEl.getBoundingClientRect().width + 'px';
-    void swapEl.offsetWidth;
-    swapEl.textContent = next;
-    swapEl.style.width = domWidth(next) + 'px';
+  // Animate a slot's gap from the old width to the new one.
+  function setTermAnimated(slot, next) {
+    slot.el.style.width = slot.el.getBoundingClientRect().width + 'px';
+    void slot.el.offsetWidth;
+    slot.el.textContent = next;
+    slot.el.style.width = domWidth(slot, next) + 'px';
   }
-  function settleTermWidth() { if (swapEl) setTimeout(() => { swapEl.style.width = 'auto'; }, 500); }
-  const nextTerm = () => TERMS[(termIdx + 1) % TERMS.length];
-  const advanceTerm = () => { termIdx = (termIdx + 1) % TERMS.length; };
-  // Fallback swap (phones, or when the arm cannot do the job): a quiet crossfade.
+  function settleTermWidth(slot) { setTimeout(() => { slot.el.style.width = 'auto'; }, 500); }
+  const nextTerm = (slot) => slot.terms[(slot.idx + 1) % slot.terms.length];
+  const advanceTerm = (slot) => { slot.idx = (slot.idx + 1) % slot.terms.length; };
+  // Fallback swap (when the arm cannot do the job): a quiet crossfade.
   let fading = false;
   let busyRef = () => false;   // becomes the gantry's busy() once it exists
-  function fadeSwap() {
-    if (!swapEl || fading || busyRef()) return;
+  function fadeSwap(slot) {
+    if (!slot || fading || busyRef()) return;
     fading = true;
-    swapEl.style.transition = 'opacity 260ms ease, width 450ms cubic-bezier(.4,0,.2,1)';
-    swapEl.style.opacity = '0';
+    slot.el.style.transition = 'opacity 260ms ease, width 450ms cubic-bezier(.4,0,.2,1)';
+    slot.el.style.opacity = '0';
     setTimeout(() => {
-      setTermAnimated(nextTerm()); advanceTerm();
-      swapEl.style.opacity = '1';
-      setTimeout(() => { settleTermWidth(); fading = false; }, 470);
+      setTermAnimated(slot, nextTerm(slot)); advanceTerm(slot);
+      slot.el.style.opacity = '1';
+      setTimeout(() => { settleTermWidth(slot); fading = false; }, 470);
     }, 280);
   }
 
@@ -169,7 +175,7 @@
       el.textContent = txt;
       el.style.left = '-9999px'; el.style.top = '0px';
       el.style.transformOrigin = '50% 0';
-      swapEl.parentNode.appendChild(el);
+      pass.slot.el.parentNode.appendChild(el);
       return el;
     }
     function weld(el, ax, ay, w2, th, dy) {
@@ -177,26 +183,27 @@
       el.style.top = (ay + (dy || 0)) + 'px';
       el.style.transform = 'rotate(' + th + 'rad)';
     }
-    function wordGrip() { const r = swapEl.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top, r }; }
+    function wordGrip() { const r = pass.slot.el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top, r }; }
     function seatGrip() { const r = spacer.getBoundingClientRect(); return { x: r.left + seatDx + pass.wN / 2, y: r.top + seatDy }; }
     function seatPt() { return pass.seatLast || (spacer ? seatGrip() : pass.gp0); }
     function attachWord() {
-      const r = swapEl.getBoundingClientRect();
+      const r = pass.slot.el.getBoundingClientRect();
       spacer = document.createElement('span');
       spacer.className = 'swap-gap';
       spacer.style.width = r.width + 'px';
-      swapEl.parentNode.insertBefore(spacer, swapEl);
+      pass.slot.el.parentNode.insertBefore(spacer, pass.slot.el);
       const sr = spacer.getBoundingClientRect();
       seatDx = r.left - sr.left; seatDy = r.top - sr.top;
       pass.wO = r.width;
-      swapEl.classList.add('carried');
-      swapEl.style.left = r.left + 'px'; swapEl.style.top = r.top + 'px';
-      swapEl.style.transformOrigin = '50% 0';
+      pass.slot.el.classList.add('carried');
+      pass.slot.el.style.left = r.left + 'px'; pass.slot.el.style.top = r.top + 'px';
+      pass.slot.el.style.transformOrigin = '50% 0';
       carrying = true;
     }
     function releaseSeat() {
-      swapEl.classList.remove('carried');
-      swapEl.style.left = swapEl.style.top = swapEl.style.transform = swapEl.style.transformOrigin = '';
+      const el = pass.slot.el;
+      el.classList.remove('carried');
+      el.style.left = el.style.top = el.style.transform = el.style.transformOrigin = '';
       if (spacer) { spacer.remove(); spacer = null; }
       carrying = false;
     }
@@ -204,24 +211,25 @@
       const p = pass;
       const nr = ghostN.getBoundingClientRect();
       // the old word's pixels continue on a ghost that leaves with the trolley
-      ghostO = makeGhost(swapEl.textContent);
-      ghostO.style.left = swapEl.style.left; ghostO.style.top = swapEl.style.top;
-      ghostO.style.transform = swapEl.style.transform;
+      ghostO = makeGhost(p.slot.el.textContent);
+      ghostO.style.left = p.slot.el.style.left; ghostO.style.top = p.slot.el.style.top;
+      ghostO.style.transform = p.slot.el.style.transform;
       // the real span becomes the new term and settles into the slot
-      swapEl.textContent = p.newTxt;
-      advanceTerm();
+      p.slot.el.textContent = p.newTxt;
+      advanceTerm(p.slot);
       releaseSeat();
-      const rr = swapEl.getBoundingClientRect();
+      const rr = p.slot.el.getBoundingClientRect();
       p.stats.releaseJump = Math.hypot(rr.left - nr.left, rr.top - nr.top);
       ghostN.remove(); ghostN = null;
       p.seatLast = { x: rr.left + rr.width / 2, y: rr.top };
     }
 
-    function startPass() {
-      if (pass || !swapEl || !ctx || fading) return false;
+    function startPass(slotArg) {
+      if (pass || !SLOTS.length || !ctx || fading) return false;
       if (mqReduce.matches || document.visibilityState !== 'visible') return false;
+      const sl = slotArg || nextSlot();
       sizeCanvas();
-      const wr = swapEl.getBoundingClientRect();
+      const wr = sl.el.getBoundingClientRect();
       const carY = RAILY + HANG;
       const wordX = wr.left + wr.width / 2, wordTop = wr.top;
       const drop = wordTop - HOFF - carY;
@@ -229,8 +237,8 @@
       if (wr.left < 8 || wr.right > W - 8 || wr.bottom > H - 36) return false;
       Ltot = drop * 1.22 + 26;
       L = [0.47 * Ltot, 0.38 * Ltot, 0.15 * Ltot];
-      const newTxt = nextTerm();
-      const wN = domWidth(newTxt);
+      const newTxt = nextTerm(sl);
+      const wN = domWidth(sl, newTxt);
       const seatX = wr.left + wN / 2;              // the slot grows rightward; its left edge is pinned
       const cGl = (wordX + seatX) / 2, D = VMIN * TG;
       const xg0 = cGl + D / 2, xg1 = cGl - D / 2;
@@ -241,7 +249,7 @@
       pass = {
         t: 0, T1, T3, Ttot: T1 + TG + T3,
         x0, xg0, xg1, xe, v1: -1.3 * d1 / T1, v3: -1.3 * d3 / T3,
-        carY, wN, wO: wr.width, newTxt, gp0: null, seatLast: null, scroll0: scrollY,
+        slot: sl, carY, wN, wO: wr.width, newTxt, gp0: null, seatLast: null, scroll0: scrollY,
         carX: x0, carV: -1.3 * d1 / T1, carA: 0,
         tau: PI / 2, tauV: 0,
         opA: 0.15, opAV: 0, opB: 0.16, opBV: 0,
@@ -256,6 +264,7 @@
       q = g.slice();
       ghostN = makeGhost(newTxt);
       pass.wN = ghostN.getBoundingClientRect().width;
+      slotTurn = (SLOTS.indexOf(sl) + 1) % SLOTS.length;
       startLoop();
       return true;
     }
@@ -381,7 +390,7 @@
       stepPend(p, 'thA', 'thAV', 'pA', aA, h);
       stepPend(p, 'thB', 'thBV', 'pB', aB, h);
       if (tp >= EV.down2[0] && tp < EV.place[1]) { p.thB *= Math.exp(-h / 0.09); p.thBV = 0; }
-      if (carrying) weld(swapEl, aA.x, aA.y, p.wO / 2, p.thA, p.dipA);
+      if (carrying) weld(p.slot.el, aA.x, aA.y, p.wO / 2, p.thA, p.dipA);
       if (ghostN && p.t > 0.02) weld(ghostN, aB.x, aB.y, p.wN / 2, p.thB, 0);
       if (ghostO) weld(ghostO, aA.x, aA.y, p.wO / 2, p.thA, p.dipA);
 
@@ -972,16 +981,46 @@
   busyRef = () => gantry.busy();
   // the swap cadence — every width, phones included; the gantry gates itself
   // on geometry and visibility, so a skipped beat is silent and safe
-  if (swapEl) {
-    setTimeout(() => gantry.startPass(), 6500);
+  const AUTO = !/[?&]noauto\b/.test(location.search);   // tests pin their own timing
+  if (SLOTS.length && AUTO) {
+    setTimeout(() => gantry.startPass(), 6000);
     setInterval(() => gantry.startPass(), 21000);
-    swapEl.addEventListener('click', () => {
-      if (mqReduce.matches) { setTermAnimated(nextTerm()); advanceTerm(); settleTermWidth(); return; }
-      if (!gantry.busy() && !gantry.startPass()) fadeSwap();
-    });
+  }
+  for (const s of SLOTS) s.el.addEventListener('click', () => {
+    if (mqReduce.matches) { setTermAnimated(s, nextTerm(s)); advanceTerm(s); settleTermWidth(s); return; }
+    if (!gantry.busy() && !gantry.startPass(s)) fadeSwap(s);
+  });
+
+  // ---- the floating masthead: detaches on scroll, with a little buoyancy
+  const topBar = document.querySelector('.top');
+  if (topBar && !mqReduce.matches) {
+    let bob = 0, bobV = 0, lastSc = scrollY, bobRaf = 0;
+    function bobTick() {
+      bobRaf = 0;
+      bobV += (0 - bob) * 0.16 - bobV * 0.22;
+      bob += bobV;
+      if (Math.abs(bob) > 0.05 || Math.abs(bobV) > 0.05) {
+        topBar.style.setProperty('--bob', bob.toFixed(2) + 'px');
+        bobRaf = requestAnimationFrame(bobTick);
+      } else {
+        bob = 0; bobV = 0;
+        topBar.style.setProperty('--bob', '0px');
+      }
+    }
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      topBar.classList.toggle('afloat', y > (topBar.classList.contains('afloat') ? 6 : 36));
+      bobV += clamp(y - lastSc, -60, 60) * 0.045;
+      lastSc = y;
+      if (!bobRaf) bobRaf = requestAnimationFrame(bobTick);
+    }, { passive: true });
+    topBar.classList.toggle('afloat', scrollY > 36);
+  } else if (topBar) {
+    addEventListener('scroll', () => topBar.classList.toggle('afloat', scrollY > 20), { passive: true });
+    topBar.classList.toggle('afloat', scrollY > 20);
   }
   // small dev/test hook (harmless in production)
-  window.__marginalia = { swap: () => gantry.startPass(), busy: () => gantry.busy(), stats: () => gantry.stats() };
+  window.__marginalia = { swap: (i) => gantry.startPass(i == null ? undefined : SLOTS[i]), busy: () => gantry.busy(), stats: () => gantry.stats(), slot: () => slotTurn % SLOTS.length };
   mqWide.addEventListener('change', () => {
     // re-run layouts on the side that just became active
     dispatchEvent(new Event('resize'));
