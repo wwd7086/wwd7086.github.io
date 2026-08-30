@@ -34,7 +34,7 @@ def latest_essay():
     if not m:
         return None
     title = m.group(1).strip()
-    path = m.group(2).replace("https://wwd7086.github.io", "")
+    path = m.group(2).replace("https://wendawang.me", "")
     return title, path
 
 
@@ -113,14 +113,14 @@ def main():
     print("\n=== paste into feed.xml, above the first <entry> (and update the feed's <updated>) ===")
     print(f"""  <entry>
     <title>{a.title}</title>
-    <link href="https://wwd7086.github.io/blog/{a.slug}/"/>
-    <id>https://wwd7086.github.io/blog/{a.slug}/</id>
+    <link href="https://wendawang.me/blog/{a.slug}/"/>
+    <id>https://wendawang.me/blog/{a.slug}/</id>
     <published>{rfc}</published>
     <updated>{rfc}</updated>
     <summary>{a.desc}</summary>
   </entry>""")
     print("\n=== paste into sitemap.xml (and refresh the / and /blog/ lastmod dates) ===")
-    print(f"  <url><loc>https://wwd7086.github.io/blog/{a.slug}/</loc><lastmod>{a.date}</lastmod></url>")
+    print(f"  <url><loc>https://wendawang.me/blog/{a.slug}/</loc><lastmod>{a.date}</lastmod></url>")
     print("\nthen: git add -A && git commit && git push  (Pages builds in ~30s; CDN caches HTML ~10 min)")
 
 
