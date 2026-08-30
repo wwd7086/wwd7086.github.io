@@ -382,6 +382,27 @@ footer {
   .mark .zh { display: none; }
 }
 
+/* ---- the cursor: a query ring that floats after a precise dot ---- */
+html.cur, html.cur * { cursor: none !important; }
+.cur-dot, .cur-ring {
+  position: fixed; left: 0; top: 0; z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+.cur-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent);
+  transition: opacity 200ms ease;
+}
+.cur-ring {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--ink-3);
+  transition: opacity 240ms ease, border-color 180ms ease;
+}
+.cur-ring.hot { border-color: var(--accent); }
+@media (hover: none), (pointer: coarse) { .cur-dot, .cur-ring { display: none !important; } }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   a { transition: none; }

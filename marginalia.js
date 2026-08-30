@@ -1019,6 +1019,51 @@
     addEventListener('scroll', () => topBar.classList.toggle('afloat', scrollY > 20), { passive: true });
     topBar.classList.toggle('afloat', scrollY > 20);
   }
+
+  // ---- the cursor: a small query ring that floats after a precise dot.
+  // The dot rides the true pointer (precision); the ring trails on a spring
+  // (the float), widening over anything you can press.
+  if (mqFine.matches && !mqReduce.matches && !matchMedia('(pointer: coarse)').matches) {
+    const dot = document.createElement('div');
+    const ring = document.createElement('div');
+    dot.className = 'cur-dot'; ring.className = 'cur-ring';
+    dot.setAttribute('aria-hidden', 'true'); ring.setAttribute('aria-hidden', 'true');
+    document.body.append(ring, dot);
+    document.documentElement.classList.add('cur');
+    const HOT = 'a, button, .swap, input, textarea, select, label, [role="button"]';
+    let tx = -200, ty = -200, rx = -200, ry = -200, cvx = 0, cvy = 0;
+    let sc = 1, press = false, hot = false, raf2 = 0, seen = false;
+    function tick2() {
+      raf2 = 0;
+      cvx = (cvx + (tx - rx) * 0.17) * 0.70;
+      cvy = (cvy + (ty - ry) * 0.17) * 0.70;
+      rx += cvx; ry += cvy;
+      const scT = press ? 0.75 : hot ? 1.45 : 1;
+      sc += (scT - sc) * 0.22;
+      ring.style.transform = 'translate3d(' + (rx - 11) + 'px,' + (ry - 11) + 'px,0) scale(' + sc.toFixed(3) + ')';
+      if (Math.abs(tx - rx) + Math.abs(ty - ry) > 0.4 || Math.abs(cvx) + Math.abs(cvy) > 0.1 || Math.abs((press ? 0.75 : hot ? 1.45 : 1) - sc) > 0.01)
+        raf2 = requestAnimationFrame(tick2);
+    }
+    const wake = () => { if (!raf2) raf2 = requestAnimationFrame(tick2); };
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      tx = e.clientX; ty = e.clientY;
+      if (!seen) { seen = true; rx = tx; ry = ty; dot.style.opacity = '1'; ring.style.opacity = '0.7'; }
+      hot = !!(e.target && e.target.closest && e.target.closest(HOT));
+      ring.classList.toggle('hot', hot);
+      dot.style.transform = 'translate3d(' + (tx - 2) + 'px,' + (ty - 2) + 'px,0)';
+      wake();
+    }, { passive: true });
+    addEventListener('pointerdown', (e) => { if (!e.pointerType || e.pointerType === 'mouse') { press = true; wake(); } }, { passive: true });
+    addEventListener('pointerup', () => { press = false; wake(); }, { passive: true });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { if (seen) { dot.style.opacity = '1'; ring.style.opacity = '0.7'; } });
+    // a touch means no mouse: put the native experience back
+    addEventListener('touchstart', () => {
+      document.documentElement.classList.remove('cur');
+      dot.remove(); ring.remove();
+    }, { once: true, passive: true });
+  }
   // small dev/test hook (harmless in production)
   window.__marginalia = { swap: (i) => gantry.startPass(i == null ? undefined : SLOTS[i]), busy: () => gantry.busy(), stats: () => gantry.stats(), slot: () => slotTurn % SLOTS.length };
   mqWide.addEventListener('change', () => {
