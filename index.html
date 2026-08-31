@@ -94,6 +94,10 @@
     .shanghai-link { display: inline-flex; align-items: center; gap: 0.4em; }
     .shanghai-ico { width: 1.3em; height: 1.3em; flex: none; }
 
+    /* the skyline mark added ~22px to the kicker, nudging it onto two lines;
+       slightly tighter separators (0.6rem -> 0.45rem, this page only) keep it to one */
+    .kicker span:not(:last-child)::after { margin: 0 0.45rem; }
+
     /* for the screen-reader announcement of each completed swap */
     .visually-hidden {
       position: absolute; width: 1px; height: 1px;
