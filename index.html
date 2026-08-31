@@ -90,6 +90,10 @@
     }
     @media (prefers-reduced-motion: reduce) { .swap { transition: none; } }
 
+    /* the little Shanghai skyline mark next to the hometown link */
+    .shanghai-link { display: inline-flex; align-items: center; gap: 0.4em; }
+    .shanghai-ico { width: 1.3em; height: 1.3em; flex: none; }
+
     /* for the screen-reader announcement of each completed swap */
     .visually-hidden {
       position: absolute; width: 1px; height: 1px;
@@ -143,7 +147,7 @@
         <span>Robot learning</span>
         <span>ML infrastructure</span>
         <span>Sunnyvale, California</span>
-        <span><a href="/shanghai/" title="a 3D skyscape of home">Shanghai, China</a></span>
+        <span><a class="shanghai-link" href="/shanghai/" title="a 3D skyscape of home"><svg class="shanghai-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 41 V30.5 H12 V41"/><path d="M14.5 41 V22.5 L16.5 20.5 L18.5 22.5 V41"/><circle cx="24" cy="18.8" r="3.2"/><path d="M24 22 V41 M24 15.6 V9.5"/><path d="M29.5 41 V24 L33.5 19 V41"/><path d="M36 41 V29 H40 V41"/><path d="M4 41 H44"/></svg>Shanghai, China</a></span>
       </p>
     </div>
 
@@ -310,7 +314,7 @@
 
   <footer class="wrap">
     <span>© 2026 Wenda Wang</span>
-    <span>Sunnyvale, California · <a href="/shanghai/" title="a 3D skyscape of home">Shanghai, China</a></span>
+    <span>Sunnyvale, California · <a class="shanghai-link" href="/shanghai/" title="a 3D skyscape of home"><svg class="shanghai-ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 41 V30.5 H12 V41"/><path d="M14.5 41 V22.5 L16.5 20.5 L18.5 22.5 V41"/><circle cx="24" cy="18.8" r="3.2"/><path d="M24 22 V41 M24 15.6 V9.5"/><path d="M29.5 41 V24 L33.5 19 V41"/><path d="M36 41 V29 H40 V41"/><path d="M4 41 H44"/></svg>Shanghai, China</a></span>
   </footer>
 
   <script>
