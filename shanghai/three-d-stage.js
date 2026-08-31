@@ -160,6 +160,8 @@
       note.className = 'note';
       note.textContent = 'Drag to orbit · scroll to zoom · right-drag to pan';
       root.appendChild(note);
+      // Site version: the toolbar is built (other code toggles its buttons)
+      // but never attached — the diorama is for orbiting, not exporting.
       this._toolbar = document.createElement('div');
       this._toolbar.className = 'toolbar';
       this._objBtn = document.createElement('button');
@@ -172,7 +174,6 @@
       this._glbBtn.addEventListener('click', () => this._runExport('glb'));
       this._toolbar.appendChild(this._objBtn);
       this._toolbar.appendChild(this._glbBtn);
-      root.appendChild(this._toolbar);
       this._setButtonsEnabled(false);
       /** Resolves with { THREE } once the scene is live — build the model
        *  in `await stage.ready` so nothing races the library load. */
