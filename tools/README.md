@@ -43,8 +43,10 @@ and commit the new `og/card.png`.
 
 ## Analytics (GoatCounter)
 
-The site counts pageviews and two custom events — `arm-swap` (every completed
-word swap) and `arm-summon` (a visitor clicking/keying a term to call the arm).
+The site counts pageviews and three custom events — `arm-swap` (every completed
+word swap), `arm-summon` (a visitor clicking/keying a term to call the arm), and
+`arm-return` (the greeting pass when a reader scrolls back to the top after a
+deep excursion).
 The event calls are already in `marginalia.js` and no-op until the counter
 script is present. To activate:
 

@@ -987,7 +987,32 @@
   const AUTO = !/[?&]noauto\b/.test(location.search);   // tests pin their own timing
   if (SLOTS.length && AUTO) {
     setTimeout(() => gantry.startPass(), 3000);
-    setInterval(() => gantry.startPass(), 21000);
+    let beat = setInterval(() => gantry.startPass(), 21000);
+
+    // Coming back up after real reading is a small occasion, so the arm
+    // comes out to meet you. Armed by a deep excursion — a third of the
+    // scrollable depth, at least 320px, on a page with at least 480px of
+    // travel (very tall windows never arm) — fired after settling at the
+    // top for half a second, and spent either way: one greeting per trip.
+    let lastY = scrollY, wentDeep = false, settle = 0;
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      const range = document.documentElement.scrollHeight - innerHeight;
+      if (range >= 480 && Math.max(y, lastY) > Math.max(320, range * 0.35)) wentDeep = true;
+      lastY = y;
+      if (wentDeep && y <= 24) {
+        if (!settle) settle = setTimeout(() => {
+          settle = 0;
+          if (scrollY > 24) return;        // wandered off mid-wait; stay armed
+          wentDeep = false;
+          if (gantry.startPass()) {
+            clearInterval(beat);           // don't let the idle beat pile on
+            beat = setInterval(() => gantry.startPass(), 21000);
+            if (window.goatcounter && goatcounter.count) goatcounter.count({ path: 'arm-return', event: true });
+          }
+        }, 500);
+      } else if (settle && y > 24) { clearTimeout(settle); settle = 0; }
+    }, { passive: true });
   }
   for (const s of SLOTS) s.el.addEventListener('click', () => {
     if (window.goatcounter && goatcounter.count) goatcounter.count({ path: 'arm-summon', event: true });
