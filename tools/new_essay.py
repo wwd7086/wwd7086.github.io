@@ -6,11 +6,13 @@
         --date 2026-09-15 [--x-url https://x.com/wwd7086/status/...]
 
 Creates blog/<slug>/index.html (write the body there), renders og/<slug>.png,
-and prints the four snippets to paste: blog list, home Writing list, feed.xml
-entry, sitemap line. Nothing else is modified automatically.
+regenerates sitemap.xml, and prints the three snippets to paste: blog list,
+home Writing list, feed.xml entry. Nothing else is modified automatically.
 """
 import argparse
 import datetime
+import html
+import json
 import re
 import subprocess
 import sys
@@ -71,8 +73,11 @@ def main():
     )
 
     page = (ROOT / "tools" / "essay-template.html").read_text()
+    jstr = lambda s: json.dumps(s, ensure_ascii=False)[1:-1]   # JSON-escaped, no quotes
     for k, v in {
-        "{{TITLE}}": a.title, "{{DESC}}": a.desc, "{{SLUG}}": a.slug,
+        "{{TITLE_JSON}}": jstr(a.title), "{{DESC_JSON}}": jstr(a.desc),   # the BlogPosting block
+        "{{TITLE}}": html.escape(a.title, quote=True), "{{DESC}}": html.escape(a.desc, quote=True),
+        "{{SLUG}}": a.slug,
         "{{DATE_ISO}}": a.date, "{{DATE_HUMAN}}": human,
         "{{SOURCE_NOTE}}": source, "{{PREV_LINK}}": prev_link,
         "{{STYLE_V}}": sv, "{{JS_V}}": jv,
@@ -119,8 +124,8 @@ def main():
     <updated>{rfc}</updated>
     <summary>{a.desc}</summary>
   </entry>""")
-    print("\n=== paste into sitemap.xml (and refresh the / and /blog/ lastmod dates) ===")
-    print(f"  <url><loc>https://wendawang.me/blog/{a.slug}/</loc><lastmod>{a.date}</lastmod></url>")
+    print("\nsitemap.xml: regenerated (tools/sitemap.py picks the new page up and dates every page from git) —")
+    subprocess.run([sys.executable, str(ROOT / "tools" / "sitemap.py")], check=True)
     print("\nthen: git add -A && git commit && git push  (Pages builds in ~30s; CDN caches HTML ~10 min)")
 
 
