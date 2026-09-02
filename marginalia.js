@@ -25,8 +25,9 @@
   const tok = {};
   function readTokens() {
     const cs = getComputedStyle(document.documentElement);
+    // drawing prefers the --draw-* siblings (hairline-light) where the sheet defines them
     for (const k of ['bg', 'ink', 'ink-2', 'ink-3', 'rule', 'accent', 'accent-2'])
-      tok[k] = cs.getPropertyValue('--' + k).trim();
+      tok[k] = cs.getPropertyValue('--draw-' + k).trim() || cs.getPropertyValue('--' + k).trim();
   }
 
   // The active drawing surface. Runners point G at their canvas before calling scenes.

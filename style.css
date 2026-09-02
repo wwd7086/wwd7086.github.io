@@ -3,10 +3,16 @@
   --bg-2: #ebe6dd;
   --ink: #2a2724;
   --ink-2: #5d5851;
-  --ink-3: #8f8880;
+  --ink-3: #726b63;      /* text tokens hold 4.5:1+ on --bg (WCAG AA for small text) */
   --rule: #d8d1c5;
-  --accent: #7c8c79;
-  --accent-2: #9a8a76;
+  --accent: #61705f;
+  --accent-2: #77695a;
+
+  /* the canvases and the cursor draw with these lighter siblings: a 1px
+     hairline wants to whisper, and text legibility rules don't apply to it */
+  --draw-ink-3: #8f8880;
+  --draw-accent: #7c8c79;
+  --draw-accent-2: #9a8a76;
 
   --bg-t: rgba(245, 242, 236, 0.82);
 
@@ -21,10 +27,13 @@
     --bg-2: #232120;
     --ink: #e9e3d9;
     --ink-2: #b5aea3;
-    --ink-3: #807a71;
+    --ink-3: #8a8479;
     --rule: #35322e;
     --accent: #9daa99;
     --accent-2: #b3a48f;
+    --draw-ink-3: #807a71;
+    --draw-accent: #9daa99;
+    --draw-accent-2: #b3a48f;
     --bg-t: rgba(27, 26, 24, 0.82);
   }
 }
@@ -392,19 +401,48 @@ html.cur, html.cur * { cursor: none !important; }
 }
 .cur-dot {
   width: 4px; height: 4px; border-radius: 50%;
-  background: var(--accent);
+  background: var(--draw-accent);
   transition: opacity 200ms ease;
 }
 .cur-ring {
   width: 22px; height: 22px; border-radius: 50%;
-  border: 1px solid var(--ink-3);
+  border: 1px solid var(--draw-ink-3);
   transition: opacity 240ms ease, border-color 180ms ease;
 }
-.cur-ring.hot { border-color: var(--accent); }
+.cur-ring.hot { border-color: var(--draw-accent); }
 @media (hover: none), (pointer: coarse) { .cur-dot, .cur-ring { display: none !important; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   a { transition: none; }
   .top { transition: none; }
+}
+
+/* ---- paper: the page without its machinery ---- */
+@media print {
+  :root {
+    --bg: #fff; --bg-2: #f2f2f2; --bg-t: #fff;
+    --ink: #000; --ink-2: #222; --ink-3: #444;
+    --rule: #bbb; --accent: #000; --accent-2: #333;
+  }
+  html { background: #fff; color: #000; font-size: 11.5pt; scroll-behavior: auto; }
+  html.cur, html.cur * { cursor: auto !important; }
+  .rig, .gantry, .vignette, .cur-dot, .cur-ring, .top nav, .visually-hidden { display: none !important; }
+  .top {
+    position: static; padding: 0 0 0.9rem;
+    background: none; box-shadow: none; border-radius: 0;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    transform: none !important;        /* the bob is set inline by script */
+  }
+  .hero { padding-top: 2rem; }
+  .swap, .swap-gap { border-bottom: 0 !important; }   /* the slots read as plain words */
+  a { color: inherit; text-decoration: none; }
+  article a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.82em; color: #444; word-break: break-all;
+  }
+  h1, h2, h3 { break-after: avoid; }
+  pre, blockquote, figure, table, .pub { break-inside: avoid; }
+  pre { white-space: pre-wrap; }
+  @page { margin: 2cm; }
 }

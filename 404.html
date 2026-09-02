@@ -6,10 +6,11 @@
   <title>Not found — Wenda Wang</title>
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="light dark">
+  <link rel="preload" href="/fonts/newsreader-3.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/fonts/fonts.css">
   <style>
-    :root { --bg:#f5f2ec; --ink:#2a2724; --ink-3:#8f8880; --rule:#d8d1c5; --accent:#7c8c79; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#1b1a18; --ink:#e9e3d9; --ink-3:#807a71; --rule:#35322e; --accent:#9daa99; } }
+    :root { --bg:#f5f2ec; --ink:#2a2724; --ink-3:#726b63; --rule:#d8d1c5; --accent:#61705f; --draw-ink-3:#8f8880; --draw-accent:#7c8c79; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#1b1a18; --ink:#e9e3d9; --ink-3:#8a8479; --rule:#35322e; --accent:#9daa99; --draw-ink-3:#807a71; --draw-accent:#9daa99; } }
     * { box-sizing: border-box; }
     html { background:var(--bg); color:var(--ink); font-family:"Newsreader","Iowan Old Style",Georgia,serif; }
     body { margin:0; min-height:100vh; display:grid; place-items:center; padding:2rem; }
@@ -46,7 +47,7 @@
       const tok = {};
       function readTokens() {
         const cs = getComputedStyle(document.documentElement);
-        for (const k of ['bg', 'ink-3', 'rule', 'accent']) tok[k] = cs.getPropertyValue('--' + k).trim();
+        for (const k of ['bg', 'ink-3', 'rule', 'accent']) tok[k] = cs.getPropertyValue('--draw-' + k).trim() || cs.getPropertyValue('--' + k).trim();
       }
 
       let W = 0, H = 0, L = [150, 120, 80], reach = 0, baseX = 0, baseY = 0, hidden = false;
