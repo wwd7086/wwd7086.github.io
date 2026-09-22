@@ -54,6 +54,25 @@ each page head stays the primary icon for modern browsers; the ICO (16/32/48)
 covers Safari, old crawlers and search-result thumbnails, and the 180px PNG
 is what an iPhone shows when someone saves the site to a home screen.
 
+## Shanghai skyscape
+
+`/shanghai/` is imported from Wenda's Claude Design project and adapted, not
+written here: the page is the design's `shanghai-skyscape.html` and its
+`sky/bundle.js` (three.js r184 and the city modules in one file) served as-is,
+with these site changes on top — the design tool's injected script and
+thumbnail template removed; the site head (description, canonical, icons,
+social card) and the GoatCounter tag added; a `← wendawang.me` link under the
+title; and Google Fonts swapped for self-hosted files. For the fonts:
+
+    python3 tools/shanghai_fonts.py            # rebuild fonts/sky-*.woff2
+    python3 tools/shanghai_fonts.py --check    # part of tools/check.py
+
+Newsreader comes from `fonts/fonts.css`; Noto Serif SC (one variable file) and
+IBM Plex Mono 400/500 are cut by Google Fonts to exactly the characters in the
+page and bundle — the HUD, the tour captions, and the neon signs the city
+paints onto canvas. Re-run it whenever a new version of the design lands.
+The social card is `og/shanghai.jpg`, a 1200×630 frame of the tour's opening.
+
 ## Tests
 
     pip install playwright pillow && python3 -m playwright install chromium
@@ -68,6 +87,7 @@ on failure; `check.py` just runs them in turn:
 | test            | what it guards                                                        |
 |-----------------|-----------------------------------------------------------------------|
 | `sitemap`       | `sitemap.xml` still matches `tools/sitemap.py` (dates from git)        |
+| `sky-fonts`     | the skyscape's font subsets still cover every character it uses        |
 | `kicker`        | the hero kicker stays on one line at every desktop width               |
 | `polish`        | icons served, font preloads used, AA palette, print sheet              |
 | `smoke`         | two arm passes + a click on slot B: one slot per pass, physics contract |

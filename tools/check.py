@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the site's browser tests before a push.
 
-    python3 tools/check.py                 # the quick set (~3 min): sitemap, kicker, polish,
+    python3 tools/check.py                 # the quick set (~3 min): sitemap, sky-fonts, kicker, polish,
                                            #   smoke, cadence, cursor, scroll-return, sweep --quick
     python3 tools/check.py --full          # ...with the full 40-size sweep instead (~10 min)
     python3 tools/check.py --only smoke,kicker
@@ -21,6 +21,7 @@ TESTS = HERE / "tests"
 
 ORDER = [
     ("sitemap", ["../sitemap.py", "--check"]),      # lastmod dates still match git
+    ("sky-fonts", ["../shanghai_fonts.py", "--check"]),  # the skyscape's font subsets cover its text
     ("kicker", ["test_kicker.py"]),
     ("polish", ["test_polish.py"]),
     ("smoke", ["test_smoke.py"]),
