@@ -106,7 +106,7 @@
     { a0: 1.2, lift: 0.06 },  // 08 终 Finale — the skyline low, sky above it for the fireworks
   ];
   function framing(S, cam, perFrame) {
-    const baseT = Math.tan(cam.fov * Math.PI / 360);
+    const baseT = Math.tan(cam.fov * Math.PI / 360), MAX_T = Math.tan(40 * Math.PI / 180);   // never wider than 80° top to bottom
     let cur = null, lift = 0, lastAspect = 0;
     const upm = cam.updateProjectionMatrix.bind(cam);
     // an off-axis lift that survives the app's own updateProjectionMatrix calls (resize, quality)
@@ -114,7 +114,7 @@
     const apply = () => {
       const a = innerWidth / Math.max(1, innerHeight); lastAspect = a;
       let t = baseT, l = 0;
-      if (cur && a < cur.a0) { t = baseT * cur.a0 / a; l = cur.lift; }
+      if (cur && a < cur.a0) { t = Math.min(baseT * cur.a0 / a, MAX_T); l = cur.lift; }
       cam.fov = 2 * Math.atan(t) * 180 / Math.PI; lift = l; cam.updateProjectionMatrix();
     };
     window.__skyOnChapter = i => { cur = FRAMING[i] === undefined ? null : FRAMING[i]; apply(); };
