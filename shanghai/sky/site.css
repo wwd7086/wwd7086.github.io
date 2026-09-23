@@ -1,0 +1,85 @@
+/* The site's layer over the design's HUD (see site.js). A desktop with a mouse
+   keeps the design exactly, except in very short windows, which get the
+   compact landscape layout below instead of overlapping. */
+
+/* ---- short, wide screens: phones held sideways, very short windows ---- */
+@media (orientation: landscape) and (max-height: 500px) {
+  #title { left: 20px; top: 14px; }
+  #title .cn { font-size: 26px; }
+  #title .en { font-size: 14px; margin-top: 4px; }
+  #title .hint, #compass { display: none; }
+  #home { margin-top: 6px; }
+  #clock { right: 20px; top: 16px; }
+  #clockTime { font-size: 22px; }
+  #clockLabel { margin-top: 4px; }
+  /* the chapter list stays a column on the right, English names included */
+  /* centred between the clock and the timeline without a transform (a transform would capture the fixed resume pill) */
+  #chapters { top: 62px; bottom: 54px; left: auto; right: 20px; transform: none; flex-direction: column; align-items: flex-end; justify-content: center; gap: 0; overflow: visible; padding: 0; pointer-events: none !important; }
+  .chap, #tourBtn { pointer-events: auto; }
+  .chap { padding: 4px 0; gap: 10px; }
+  .chap .num { font-size: 9px; }
+  .chap .nm { font-size: 13px; }
+  .chap .nm i { display: inline; font-size: 12px; margin-left: 5px; }
+  #tourBtn { margin-top: 6px; }
+  #caption, #card { left: 20px; right: auto; bottom: 60px; max-width: min(46vw, 420px); }
+  #capTitle { font-size: 20px; }
+  #capTitle i { font-size: 16px; margin-left: 8px; }
+  #capText { font-size: 13px; line-height: 1.45; margin-top: 6px; }
+  #capBarWrap { margin-top: 8px; width: 160px; }
+  #card { padding: 12px 16px 12px; max-height: calc(100vh - 176px); overflow: auto; }
+  #cardCn { font-size: 20px; }
+  #cardEn { font-size: 14px; margin-top: 2px; }
+  #cardMeta, #cardNote { margin-top: 6px; }
+  #cardNote { font-size: 13px; line-height: 1.45; }
+  #timeline { left: 20px; right: 20px; bottom: 12px; gap: 14px; }
+  #keys { right: 20px; bottom: 56px; }
+}
+
+/* ---- touch screens ---- */
+@media (pointer: coarse) {
+  /* no keyboard: no shortcut legend */
+  #helpBtn, #keys { display: none !important; }
+
+  /* page zoom stays out of the way of the city's own pinch; the strip still scrolls sideways */
+  html { touch-action: none; }
+  #chapters { touch-action: pan-x; }
+  /* drags that start on the caption reach the city */
+  #caption { pointer-events: none !important; }
+
+  /* the card can open during the tour (site.js pauses the tour under it) */
+  body.sky-card[data-mode="tour"] #card { display: block; }
+  body.sky-card #caption { opacity: 0; }
+
+  /* hit areas of at least 44 px, the look unchanged */
+  #play, #tiltBtn { position: relative; }
+  #play::after, #tiltBtn::after { content: ''; position: absolute; inset: -6px; }
+  #cardClose { right: 0; top: 0; padding: 13px 17px; line-height: 1; min-width: 44px; min-height: 44px; }
+  #home { padding: 15px 0; margin-bottom: -15px; }
+  #title #home { margin-top: -1px; }
+  .mark { pointer-events: none; }   /* eight ticks a few px apart: a tap there sets the time instead */
+
+  /* tilt to look (added by site.js) */
+  #tiltBtn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: none; display: grid; place-items: center; flex: none; padding: 0; color: var(--dim); }
+  #tiltBtn[aria-pressed="true"] { color: var(--accent); border-color: var(--ink); }
+  #tiltBtn svg { display: block; }
+}
+@media (pointer: coarse) and (max-width: 720px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  /* the way back into the tour floats on its own instead of hiding at the end of the chapter list */
+  #tourBtn { position: fixed; left: 50%; bottom: 142px; transform: translateX(-50%); margin: 0; padding: 11px 18px; background: var(--panel); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); z-index: 2; white-space: nowrap; }
+  body:has(#card.on) #tourBtn { opacity: 0; pointer-events: none; }
+}
+@media (pointer: coarse) and (max-width: 720px) {
+  /* 44 px chapter chips in the phone strip */
+  #chapters { bottom: 84px; padding-bottom: 0; }
+  .chap { padding: 10px 0; }
+  #caption, #card { bottom: 144px; }
+}
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  #tourBtn { left: 20px; bottom: 58px; transform: none; }
+  #caption, #card { bottom: 60px; }
+  #chapters { bottom: 54px; touch-action: none; }
+  .chap { padding: 4px 0; }
+}
+
+/* ?fps readout */
+#skyFps { position: fixed; top: 6px; left: 50%; transform: translateX(-50%); z-index: 20; font: 500 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; color: #f3efe8; background: rgba(8,9,14,.6); padding: 5px 8px; border-radius: 3px; pointer-events: none; }

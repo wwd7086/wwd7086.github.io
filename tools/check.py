@@ -22,6 +22,7 @@ TESTS = HERE / "tests"
 ORDER = [
     ("sitemap", ["../sitemap.py", "--check"]),      # lastmod dates still match git
     ("sky-fonts", ["../shanghai_fonts.py", "--check"]),  # the skyscape's font subsets cover its text
+    ("sky-import", ["../shanghai_import.py", "--check"]),  # the skyscape's site hooks still apply and are deployed
     ("kicker", ["test_kicker.py"]),
     ("polish", ["test_polish.py"]),
     ("smoke", ["test_smoke.py"]),

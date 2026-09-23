@@ -56,13 +56,51 @@ is what an iPhone shows when someone saves the site to a home screen.
 
 ## Shanghai skyscape
 
-`/shanghai/` is imported from Wenda's Claude Design project and adapted, not
-written here: the page is the design's `shanghai-skyscape.html` and its
-`sky/bundle.js` (three.js r184 and the city modules in one file) served as-is,
-with these site changes on top — the design tool's injected script and
-thumbnail template removed; the site head (description, canonical, icons,
-social card) and the GoatCounter tag added; a `← wendawang.me` link under the
-title; and Google Fonts swapped for self-hosted files. For the fonts:
+`/shanghai/` is imported from Wenda's Claude Design project, not written here.
+The design's two files are kept untouched in `tools/shanghai/design/`
+(`shanghai-skyscape.html` and `sky/bundle.js`, three.js r184 and the city in
+one file), and one script turns them into the site's page:
+
+    python3 tools/shanghai_import.py            # -> shanghai/index.html, shanghai/sky/bundle.js
+    python3 tools/shanghai_import.py --check    # part of tools/check.py
+    python3 tools/shanghai_import.py --no-minify   # readable bundle, for debugging
+
+On every import it re-applies the site's changes, so a new version of the design
+never loses them:
+
+- the page: the design tool's injected script and thumbnail template removed;
+  the site head (description, canonical, icons, social card) and GoatCounter
+  added; a `← wendawang.me` link under the title; Google Fonts swapped for
+  self-hosted files; `sky/site.css` and `sky/site.js` linked; every asset URL
+  carries a content hash, so a deploy is never half-cached.
+- the bundle: ten small hooks, each anchored on an exact line of the design's
+  code (the import stops if any anchor has moved), then minified with esbuild
+  (2.4 MB → 1.0 MB, 530 → 290 KB over the wire). The hooks expose the app as
+  `window.__sky` with a `sky:ready` event, tag the street trees, read the
+  device tier, let a touch skip leaving the tour, report chapter changes, and
+  skip drawing while the tab is hidden.
+
+The site's own behaviour is in `shanghai/sky/site.js` and `site.css`, and only
+touch screens and phone-shaped viewports see it; a desktop with a mouse keeps
+the design as-is. On phones (a coarse pointer and a short side under 600 px)
+there are lighter trees in culled blocks with a far level of detail, a
+reflection that leaves out trees, cars, people and small props and redraws
+every other frame, fewer cars and pedestrians, and quality 'low' at 1.25×. On
+tall screens the tour's establishing shots widen per chapter and lift their
+subject above the caption. Phones held sideways (and very short windows) get a
+compact HUD. On touch, a tap on a tower pauses the tour under its card, only a
+drag or pinch leaves the tour, a floating pill resumes it, hit areas are 44 px,
+page zoom stays off the HUD, and a toggle turns on tilt-to-look.
+
+    /shanghai/?tier=phone     the phone tier on any device (?tier=full the opposite)
+    /shanghai/?fps            frame-rate readout
+
+Tools that render the page in a hidden tab (the video renders) set
+`window.__skyDrawHidden = true`, since a hidden page no longer draws.
+`tools/shanghai/phone-brief.md` is the matching brief for Claude Design, so
+the design can take these changes over natively.
+
+For the fonts:
 
     python3 tools/shanghai_fonts.py            # rebuild fonts/sky-*.woff2
     python3 tools/shanghai_fonts.py --check    # part of tools/check.py
@@ -88,6 +126,7 @@ on failure; `check.py` just runs them in turn:
 |-----------------|-----------------------------------------------------------------------|
 | `sitemap`       | `sitemap.xml` still matches `tools/sitemap.py` (dates from git)        |
 | `sky-fonts`     | the skyscape's font subsets still cover every character it uses        |
+| `sky-import`    | the skyscape's bundle hooks still apply, and the deployed page is current |
 | `kicker`        | the hero kicker stays on one line at every desktop width               |
 | `polish`        | icons served, font preloads used, AA palette, print sheet              |
 | `smoke`         | two arm passes + a click on slot B: one slot per pass, physics contract |
